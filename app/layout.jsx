@@ -8,10 +8,16 @@ export const metadata = {
     "Інтернет-магазин LOSSO: товари для дому, саду, кухні, будівельні інструменти. Оптом та в роздріб. Доставка по Україні.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="uk">
-      <body className="min-h-screen flex flex-col bg-stone-50 text-stone-900">
+    <html lang="uk" className="scroll-smooth">
+      <body className="min-h-screen flex flex-col bg-stone-50 text-stone-900 antialiased overflow-x-hidden">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

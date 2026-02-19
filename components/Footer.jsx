@@ -13,18 +13,18 @@ export default function Footer() {
           </div>
           <div>
             <h3 className="font-semibold text-white mb-3">Навігація</h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-1 text-sm">
               <li>
-                <Link href="/" className="hover:text-white">Головна</Link>
+                <Link href="/" className="block py-2 hover:text-white">Головна</Link>
               </li>
               <li>
-                <Link href="/catalog" className="hover:text-white">Каталог</Link>
+                <Link href="/catalog" className="block py-2 hover:text-white">Каталог</Link>
               </li>
               <li>
-                <Link href="/delivery" className="hover:text-white">Доставка та оплата</Link>
+                <Link href="/delivery" className="block py-2 hover:text-white">Доставка та оплата</Link>
               </li>
               <li>
-                <Link href="/contacts" className="hover:text-white">Контакти</Link>
+                <Link href="/contacts" className="block py-2 hover:text-white">Контакти</Link>
               </li>
             </ul>
           </div>

@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Мобільна адаптація: без горизонтального скролу, зручні інпути */
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* iOS не збільшує інпути при фокусі, якщо font-size >= 16px */
+  input, select, textarea, button {
+    font-size: 16px;
+  }
+  @media (min-width: 768px) {
+    input, select, textarea {
+      font-size: inherit;
+    }
+  }
+}

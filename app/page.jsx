@@ -8,17 +8,17 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-stone-800 text-white py-16 px-4">
+      <section className="bg-stone-800 text-white py-10 sm:py-16 px-4">
         <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
             Магазин LOSSO — товари для дому та саду
           </h1>
-          <p className="text-stone-300 text-lg max-w-2xl mx-auto mb-8">
+          <p className="text-stone-300 text-base sm:text-lg max-w-2xl mx-auto mb-6 sm:mb-8">
             Якісні товари для дому, кухні, саду та городу. Оптом і в роздріб. Доставка по всій Україні.
           </p>
           <Link
             href="/catalog"
-            className="inline-block rounded-lg bg-white text-stone-800 px-6 py-3 font-medium hover:bg-stone-100"
+            className="inline-block rounded-lg bg-white text-stone-800 px-6 py-3 font-medium hover:bg-stone-100 min-h-[48px] flex items-center justify-center"
           >
             Перейти в каталог
           </Link>
@@ -26,9 +26,9 @@ export default function HomePage() {
       </section>
 
       {/* Категорії */}
-      <section className="py-12 px-4">
+      <section className="py-8 sm:py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Категорії</h2>
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Категорії</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {mainCategories.map((cat) => (
               <Link
@@ -44,15 +44,15 @@ export default function HomePage() {
       </section>
 
       {/* Товари для дому — підкатегорії */}
-      <section className="py-12 px-4 bg-white">
+      <section className="py-8 sm:py-12 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Товари для дому</h2>
-          <div className="flex flex-wrap gap-3">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Товари для дому</h2>
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {homeSubcategories.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/catalog/${cat.slug}`}
-                className="rounded-lg bg-stone-100 px-4 py-2 text-stone-700 hover:bg-stone-200"
+                className="rounded-lg bg-stone-100 px-4 py-2.5 text-stone-700 hover:bg-stone-200 min-h-[44px] inline-flex items-center"
               >
                 {cat.name}
               </Link>
@@ -62,9 +62,9 @@ export default function HomePage() {
       </section>
 
       {/* Акційні / рекомендовані товари */}
-      <section className="py-12 px-4">
+      <section className="py-8 sm:py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Популярні товари</h2>
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Популярні товари</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((p) => (
               <Link
@@ -89,17 +89,17 @@ export default function HomePage() {
       </section>
 
       {/* Про нас + контакти */}
-      <section className="py-12 px-4 bg-stone-100">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+      <section className="py-8 sm:py-12 px-4 bg-stone-100">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
           <div>
-            <h2 className="text-2xl font-bold mb-4">Про нас</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mb-4">Про нас</h2>
             <p className="text-stone-700">
               Інтернет-магазин товарів для дому та саду Losso пропонує оригінальну продукцію за привабливою ціною.
               Широкий асортимент, доставка по Україні, зручна оплата та обмін згідно з законодавством.
             </p>
           </div>
           <div>
-            <h2 className="text-2xl font-bold mb-4">Контакти</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mb-4">Контакти</h2>
             <ul className="space-y-2 text-stone-700">
               <li>+380 (98) 040-25-00</li>
               <li>+380 (93) 040-25-00</li>

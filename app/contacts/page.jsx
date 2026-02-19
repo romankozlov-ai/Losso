@@ -71,7 +71,7 @@ export default function ContactsPage() {
           </div>
           <button
             type="submit"
-            className="rounded-lg bg-stone-800 text-white px-6 py-2 font-medium hover:bg-stone-700"
+            className="rounded-lg bg-stone-800 text-white px-6 py-3 font-medium hover:bg-stone-700 min-h-[48px]"
           >
             Надіслати
           </button>

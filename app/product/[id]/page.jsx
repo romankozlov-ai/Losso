@@ -42,7 +42,7 @@ export default async function ProductPage({ params }) {
           </p>
           <Link
             href="/cart"
-            className="inline-block rounded-lg bg-stone-800 text-white px-6 py-3 font-medium hover:bg-stone-700"
+            className="inline-flex items-center justify-center rounded-lg bg-stone-800 text-white px-6 py-3 font-medium hover:bg-stone-700 min-h-[48px]"
           >
             Додати в кошик
           </Link>

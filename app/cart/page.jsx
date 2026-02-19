@@ -14,7 +14,7 @@ export default function CartPage() {
       </p>
       <Link
         href="/catalog"
-        className="inline-block mt-4 rounded-lg bg-stone-800 text-white px-4 py-2 font-medium hover:bg-stone-700"
+        className="inline-flex items-center justify-center mt-4 rounded-lg bg-stone-800 text-white px-4 py-3 font-medium hover:bg-stone-700 min-h-[48px]"
       >
         Перейти в каталог
       </Link>
