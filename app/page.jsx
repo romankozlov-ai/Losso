@@ -11,7 +11,7 @@ export default function HomePage() {
       <section className="bg-stone-800 text-white py-16 px-4">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            Товари для дому та саду LOSSO
+            Магазин LOSSO — товари для дому та саду
           </h1>
           <p className="text-stone-300 text-lg max-w-2xl mx-auto mb-8">
             Якісні товари для дому, кухні, саду та городу. Оптом і в роздріб. Доставка по всій Україні.
