@@ -40,12 +40,24 @@ export default async function ProductPage({ params }) {
           <p className="text-stone-600 mb-6">
             Опис товару можна додати тут або підтягувати з даних.
           </p>
-          <Link
-            href="/cart"
-            className="inline-flex items-center justify-center rounded-lg bg-stone-800 text-white px-6 py-3 font-medium hover:bg-stone-700 min-h-[48px]"
-          >
-            Додати в кошик
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/cart"
+              className="inline-flex items-center justify-center rounded-lg bg-stone-800 text-white px-6 py-3 font-medium hover:bg-stone-700 min-h-[48px]"
+            >
+              Додати в кошик
+            </Link>
+            {product.externalUrl && (
+              <a
+                href={product.externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-6 py-3 font-medium text-stone-700 hover:bg-stone-50 min-h-[48px]"
+              >
+                Купити на losso.com.ua
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>

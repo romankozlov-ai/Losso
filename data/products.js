@@ -47,6 +47,15 @@ export const products = [
     image: null,
     inStock: true,
   },
+  {
+    id: "7",
+    name: "Годинники настільні електронні дзеркальні Losso Premium (BT) з LED підсвічуванням і термометром (білі), будильник",
+    price: 690,
+    categorySlug: "godynnyky",
+    image: null,
+    inStock: true,
+    externalUrl: "https://losso.com.ua/ua/p1058879712-chasy-nastolnye-elektronnye.html",
+  },
 ];
 
 export function getProductById(id) {
