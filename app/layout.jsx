@@ -1,7 +1,20 @@
 import "./globals.css";
+import { Lora, Manrope } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
+
+const lora = Lora({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-lora",
+  display: "swap",
+});
+
+const manrope = Manrope({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-manrope",
+  display: "swap",
+});
 
 export const metadata = {
   title: "LOSSO — товари для дому та саду",
@@ -17,8 +30,8 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="uk" className="scroll-smooth">
-      <body className="min-h-screen flex flex-col bg-stone-50 text-stone-900 antialiased overflow-x-hidden">
+    <html lang="uk" className={`scroll-smooth ${lora.variable} ${manrope.variable}`}>
+      <body className="min-h-screen flex flex-col font-sans bg-losso-cream text-losso-stone antialiased overflow-x-hidden">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
