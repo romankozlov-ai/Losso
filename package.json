@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "node -e \"require(require('path').resolve(process.env.INIT_CWD || process.cwd(), 'scripts', 'run-dev.js'))\"",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "build": "node node_modules/next/dist/bin/next build",
+    "start": "node node_modules/next/dist/bin/next start",
+    "lint": "node node_modules/next/dist/bin/next lint"
   },
   "dependencies": {
     "axios": "^1.13.5",
