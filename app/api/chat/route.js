@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { CHAT_SYSTEM_PROMPT } from "@/lib/chat-prompt";
 
-const NVIDIA_API_KEY = process.env.DEEPSEEK_API_KEY;
+const KIMI_API_KEY = process.env.KIMI_API_KEY;
 
 const FALLBACK_MESSAGE =
   "Чат тимчасово недоступний. Напишіть нам: lossotrade@gmail.com або зателефонуйте +380 (98) 040-25-00, +380 (93) 040-25-00.";
@@ -26,33 +26,29 @@ export async function POST(req) {
       );
     }
 
-    if (!NVIDIA_API_KEY) {
+    if (!KIMI_API_KEY) {
       return NextResponse.json({ content: FALLBACK_MESSAGE }, { status: 200 });
     }
 
     const apiMessages = buildMessages(messages);
-    const res = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+    const res = await fetch("https://api.moonshot.ai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${NVIDIA_API_KEY}`,
+        Authorization: `Bearer ${KIMI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "deepseek-ai/deepseek-v3.2",
+        model: "kimi-k2.5",
         messages: apiMessages,
-        max_tokens: 8192,
+        max_tokens: 4096,
         temperature: 0.7,
-        top_p: 0.95,
         stream: false,
-        extra_body: {
-          chat_template_kwargs: { thinking: false },
-        },
       }),
     });
 
     if (!res.ok) {
       const err = await res.text();
-      console.error("NVIDIA DeepSeek API error:", res.status, err);
+      console.error("Kimi API error:", res.status, err);
       return NextResponse.json(
         {
           content:
