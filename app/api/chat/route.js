@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
 import { CHAT_SYSTEM_PROMPT } from "@/lib/chat-prompt";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
 const FALLBACK_MESSAGE =
   "Чат тимчасово недоступний. Напишіть нам: lossotrade@gmail.com або зателефонуйте +380 (98) 040-25-00, +380 (93) 040-25-00.";
 
-function buildGeminiContents(messages) {
-  return messages.map((m) => ({
-    role: m.role === "user" ? "user" : "model",
-    parts: [{ text: m.content }],
-  }));
+function buildDeepSeekMessages(messages) {
+  const out = [{ role: "system", content: CHAT_SYSTEM_PROMPT }];
+  for (const m of messages) {
+    const role = m.role === "user" ? "user" : m.role === "assistant" ? "assistant" : "user";
+    out.push({ role, content: m.content || "" });
+  }
+  return out;
 }
 
 export async function POST(req) {
@@ -24,31 +26,28 @@ export async function POST(req) {
       );
     }
 
-    if (!GEMINI_API_KEY) {
+    if (!DEEPSEEK_API_KEY) {
       return NextResponse.json({ content: FALLBACK_MESSAGE }, { status: 200 });
     }
 
-    const contents = buildGeminiContents(messages);
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
-
-    const res = await fetch(url, {
+    const apiMessages = buildDeepSeekMessages(messages);
+    const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
+      },
       body: JSON.stringify({
-        systemInstruction: {
-          parts: [{ text: CHAT_SYSTEM_PROMPT }],
-        },
-        contents,
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 500,
-        },
+        model: "deepseek-chat",
+        messages: apiMessages,
+        max_tokens: 500,
+        temperature: 0.7,
       }),
     });
 
     if (!res.ok) {
       const err = await res.text();
-      console.error("Gemini error:", res.status, err);
+      console.error("DeepSeek API error:", res.status, err);
       return NextResponse.json(
         {
           content:
@@ -59,9 +58,9 @@ export async function POST(req) {
     }
 
     const data = await res.json();
-    const textPart = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const text = data.choices?.[0]?.message?.content;
     const content =
-      (typeof textPart === "string" && textPart.trim()) || FALLBACK_MESSAGE;
+      (typeof text === "string" && text.trim()) || FALLBACK_MESSAGE;
     return NextResponse.json({ content });
   } catch (e) {
     console.error("Chat API error:", e);

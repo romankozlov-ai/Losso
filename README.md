@@ -94,7 +94,20 @@ npm run dev
 ```
 Після цього `http://localhost:3000` у Windows зазвичай працює.
 
----
+## Git і деплой (Vercel)
+
+- **Робоча гілка:** тільки **`master`**. Усі зміни робімо і пушимо з неї.
+- **Деплой:** після `git push` Vercel автоматично збирає й публікує сайт.
+- **Що робити:** завжди працюй у гілці `master`, потім:
+  ```bash
+  cd /home/user/projects/Losso
+  git checkout master
+  git add .
+  git commit -m "опис змін"
+  git push
+  ```
+- **У Vercel** для проекту Losso встанови **Production Branch = master** (Settings → Git), щоб продакшен збирався саме з `master`.
+- **Сайт:** https://losso-lemon.vercel.app/
 
 ## Наступні кроки
 
