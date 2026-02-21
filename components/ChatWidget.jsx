@@ -56,13 +56,14 @@ export default function ChatWidget() {
   return (
     <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2">
       {open && (
-        <div className="w-full max-w-sm rounded-2xl border border-stone-200 bg-white shadow-xl overflow-hidden flex flex-col max-h-[80vh]">
-          <div className="bg-stone-800 text-white px-4 py-3 flex items-center justify-between">
-            <span className="font-semibold">Чат LOSSO</span>
+        <div className="w-full max-w-sm rounded-2xl border border-losso-sand bg-white shadow-xl overflow-hidden flex flex-col max-h-[80vh]">
+          {/* Header — same tone as site header/footer */}
+          <div className="bg-losso-stone text-white px-4 py-3 flex items-center justify-between">
+            <span className="font-display font-semibold">Чат LOSSO</span>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="p-1 rounded hover:bg-stone-700"
+              className="p-1 rounded hover:bg-white/10 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
               aria-label="Закрити"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,9 +71,10 @@ export default function ChatWidget() {
               </svg>
             </button>
           </div>
+          {/* Messages — LOSSO palette */}
           <div
             ref={listRef}
-            className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[200px] max-h-[320px]"
+            className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[200px] max-h-[320px] bg-losso-cream"
           >
             {messages.map((msg, i) => (
               <div
@@ -82,8 +84,8 @@ export default function ChatWidget() {
                 <div
                   className={`rounded-2xl px-4 py-2 max-w-[85%] text-sm ${
                     msg.role === "user"
-                      ? "bg-stone-800 text-white"
-                      : "bg-stone-100 text-stone-800"
+                      ? "bg-losso-sage text-white"
+                      : "bg-losso-sand text-losso-stone"
                   }`}
                 >
                   {msg.content}
@@ -92,45 +94,48 @@ export default function ChatWidget() {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="rounded-2xl px-4 py-2 bg-stone-100 text-stone-500 text-sm">
+                <div className="rounded-2xl px-4 py-2 bg-losso-sand text-losso-muted text-sm">
                   Думаю...
                 </div>
               </div>
             )}
           </div>
-          <div className="p-3 border-t border-stone-200 flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send()}
-              placeholder="Напишіть повідомлення..."
-              className="flex-1 rounded-xl border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-400"
-              disabled={loading}
-            />
-            <button
-              type="button"
-              onClick={send}
-              disabled={loading || !input.trim()}
-              className="rounded-xl bg-stone-800 text-white px-4 py-2 text-sm font-medium hover:bg-stone-700 disabled:opacity-50"
-            >
-              Відправити
-            </button>
-          </div>
-          <div className="px-3 pb-2 pt-0 text-center">
-            <a
-              href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`}
-              className="text-xs text-stone-500 hover:text-stone-700"
-            >
-              ☎️ {CONTACT_PHONE}
-            </a>
+          {/* Chat bottom: input + send + contact link — same structure as site forms */}
+          <div className="border-t border-losso-sand bg-white p-3 space-y-3">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send()}
+                placeholder="Напишіть повідомлення..."
+                className="flex-1 rounded-xl border border-losso-sand px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-losso-sage/50 focus:border-losso-sage min-h-[44px]"
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={send}
+                disabled={loading || !input.trim()}
+                className="rounded-xl bg-losso-sage text-white px-4 py-2.5 text-sm font-medium hover:bg-losso-sage-dark disabled:opacity-50 transition-colors min-h-[44px] shrink-0"
+              >
+                Відправити
+              </button>
+            </div>
+            <p className="text-center">
+              <a
+                href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`}
+                className="text-xs text-losso-muted hover:text-losso-sage transition-colors"
+              >
+                ☎ {CONTACT_PHONE}
+              </a>
+            </p>
           </div>
         </div>
       )}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="rounded-full bg-stone-800 text-white p-4 shadow-lg hover:bg-stone-700 transition"
+        className="rounded-full bg-losso-sage text-white p-4 shadow-lg hover:bg-losso-sage-dark transition-colors min-h-[56px] min-w-[56px] flex items-center justify-center"
         aria-label={open ? "Закрити чат" : "Відкрити чат"}
       >
         {open ? (
