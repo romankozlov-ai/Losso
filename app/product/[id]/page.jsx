@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getProductById } from "@/data/products";
 import { notFound } from "next/navigation";
+import AddToCartButton from "@/components/AddToCartButton";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -19,40 +20,58 @@ export default async function ProductPage({ params }) {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <nav className="text-sm text-stone-500 mb-6">
-        <Link href="/" className="hover:text-stone-700">Головна</Link>
-        <span className="mx-2">/</span>
-        <Link href="/catalog" className="hover:text-stone-700">Каталог</Link>
-        <span className="mx-2">/</span>
-        <span className="text-stone-800 line-clamp-1">{product.name}</span>
+      <nav className="text-sm text-losso-muted mb-6 flex items-center gap-2">
+        <Link href="/" className="hover:text-losso-sage">Головна</Link>
+        <span>/</span>
+        <Link href="/catalog" className="hover:text-losso-sage">Каталог</Link>
+        <span>/</span>
+        <span className="text-losso-stone font-medium truncate max-w-[200px] sm:max-w-none">{product.name}</span>
       </nav>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="aspect-square bg-stone-100 rounded-xl flex items-center justify-center text-stone-400">
-          Фото товару
+        <div className="aspect-square rounded-2xl overflow-hidden bg-losso-sand/50 flex items-center justify-center">
+          {product.image ? (
+            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-losso-muted">Фото товару</span>
+          )}
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 mb-2">{product.name}</h1>
-          <p className="text-2xl font-semibold text-stone-800 mb-4">{product.price} ₴</p>
-          {product.inStock && (
-            <p className="text-green-700 mb-4">Готово до відправки</p>
+          {product.badge && (
+            <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase mb-3 ${product.badge === "Хіт" ? "bg-losso-sage text-white" : product.badge === "Новинка" ? "bg-amber-500 text-white" : "bg-red-600 text-white"}`}>
+              {product.badge}
+            </span>
           )}
-          <p className="text-stone-600 mb-6">
-            Опис товару можна додати тут або підтягувати з даних.
+          <h1 className="text-2xl font-bold text-losso-stone mb-2">{product.name}</h1>
+          <div className="flex items-baseline gap-2 mb-4">
+            <span className="text-2xl font-semibold text-losso-stone">{product.price} ₴</span>
+            {product.oldPrice != null && <span className="text-losso-muted line-through">{product.oldPrice} ₴</span>}
+          </div>
+          {product.inStock ? (
+            <p className="text-losso-sage font-medium mb-4">В наявності</p>
+          ) : (
+            <p className="text-losso-muted mb-4">Немає в наявності</p>
+          )}
+          <p className="text-losso-muted mb-6">
+            Оригінальна продукція {product.brand || "LOSSO"}. Доставка по всій Україні.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/cart"
-              className="inline-flex items-center justify-center rounded-lg bg-stone-800 text-white px-6 py-3 font-medium hover:bg-stone-700 min-h-[48px]"
-            >
-              Додати в кошик
-            </Link>
-            {product.externalUrl && (
+            {product.inStock && (
+              <AddToCartButton
+                productId={product.id}
+                productName={product.name}
+                price={product.price}
+                prom_id={product.prom_id}
+                sku={product.sku}
+                className="rounded-xl bg-losso-sage text-white px-6 py-3 font-semibold hover:bg-losso-sage-dark min-h-[48px]"
+              />
+            )}
+            {product.prom_url && (
               <a
-                href={product.externalUrl}
+                href={product.prom_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-6 py-3 font-medium text-stone-700 hover:bg-stone-50 min-h-[48px]"
+                className="inline-flex items-center justify-center rounded-xl border border-losso-sand px-6 py-3 font-medium text-losso-stone hover:bg-losso-sand min-h-[48px]"
               >
                 Купити на losso.com.ua
               </a>

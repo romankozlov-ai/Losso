@@ -2,9 +2,13 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { mainCategories, homeSubcategories } from "@/data/categories";
 import { products } from "@/data/products";
+import FadeIn from "@/components/FadeIn";
+import ProductGrid from "@/components/ProductGrid";
+import AdvantagesSection from "@/components/AdvantagesSection";
+import ReviewsSection from "@/components/ReviewsSection";
 
 export default function HomePage() {
-  const featuredProducts = products.slice(0, 4);
+  const featuredProducts = products.slice(0, 8);
 
   return (
     <div>
@@ -16,24 +20,34 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(22,101,52,0.08),transparent)]" aria-hidden />
         <div className="relative max-w-6xl mx-auto w-full text-center pt-12 pb-20 md:pt-16 md:pb-28">
-          <p className="font-sans text-sm font-medium tracking-wide text-losso-sage uppercase mb-4 md:mb-6">
-            Товари для дому та саду
-          </p>
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-losso-stone tracking-tight leading-[1.1] max-w-4xl mx-auto mb-6 md:mb-8">
-            Магазин LOSSO — якість і затишок у вашому домі
-          </h1>
-          <p className="font-sans text-lg sm:text-xl text-losso-muted max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed">
-            Годинники, нічники, ваги, товари для кухні та саду. Оптом і в роздріб. Доставка по всій Україні.
-          </p>
-          <Link
-            href="/catalog"
-            className="inline-flex items-center gap-2 rounded-full bg-losso-sage text-white px-8 py-4 text-base font-medium hover:bg-losso-sage-dark transition-all hover:gap-3 min-h-[52px]"
-          >
-            Перейти в каталог
-            <ChevronRight className="w-5 h-5 shrink-0" aria-hidden />
-          </Link>
+          <FadeIn>
+            <p className="font-sans text-sm font-medium tracking-wide text-losso-sage uppercase mb-4 md:mb-6">
+              Товари для дому та саду
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-losso-stone tracking-tight leading-[1.1] max-w-4xl mx-auto mb-6 md:mb-8">
+              Магазин LOSSO — якість і затишок у вашому домі
+            </h1>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p className="font-sans text-lg sm:text-xl text-losso-muted max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed">
+              Годинники, нічники, ваги, товари для кухні та саду. Оптом і в роздріб. Доставка по всій Україні.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.3}>
+            <Link
+              href="/catalog"
+              className="inline-flex items-center gap-2 rounded-full bg-losso-sage text-white px-8 py-4 text-base font-medium hover:bg-losso-sage-dark transition-all hover:gap-3 min-h-[52px]"
+            >
+              Перейти в каталог
+              <ChevronRight className="w-5 h-5 shrink-0" aria-hidden />
+            </Link>
+          </FadeIn>
         </div>
       </section>
+
+      <AdvantagesSection />
 
       {/* Категорії */}
       <section className="py-8 sm:py-12 px-4 sm:px-6 bg-white">
@@ -78,24 +92,12 @@ export default function HomePage() {
       {/* Популярні товари */}
       <section className="py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="font-display text-xl sm:text-2xl font-semibold text-losso-stone mb-4 sm:mb-6">
-            Популярні товари
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((p) => (
-              <Link
-                key={p.id}
-                href={`/product/${p.id}`}
-                className="block rounded-2xl border border-losso-sand bg-white p-4 hover:shadow-lg hover:shadow-losso-sage/5 hover:border-losso-sage/20 transition-all"
-              >
-                <div className="aspect-square bg-losso-sand/50 rounded-xl mb-3 flex items-center justify-center text-losso-muted text-sm">
-                  Фото
-                </div>
-                <h3 className="font-medium text-losso-stone line-clamp-2 mb-2">{p.name}</h3>
-                <p className="text-losso-sage font-semibold">{p.price} ₴</p>
-              </Link>
-            ))}
-          </div>
+          <FadeIn>
+            <h2 className="font-display text-xl sm:text-2xl font-semibold text-losso-stone mb-4 sm:mb-6">
+              Популярні товари
+            </h2>
+          </FadeIn>
+          <ProductGrid products={featuredProducts} />
           <div className="mt-6 text-center">
             <Link
               href="/catalog"
@@ -107,6 +109,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <ReviewsSection />
 
       {/* Про нас + контакти */}
       <section className="py-8 sm:py-12 px-4 sm:px-6 bg-losso-sand">

@@ -5,13 +5,20 @@ import { useState, useRef, useEffect } from "react";
 const CONTACT_PHONE = "+380 (98) 040-25-00";
 const CONTACT_EMAIL = "lossotrade@gmail.com";
 
+const QUICK_QUESTIONS = [
+  "Яка вартість доставки?",
+  "Як оплатити замовлення?",
+  "Які є товари для кухні?",
+  "Як зв'язатися з вами?",
+];
+
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: "assistant",
       content:
-        "Привіт! Я консультант LOSSO. Питайте про товари, ціни та доставку. Можу підказати контакти менеджера.",
+        "Вітаю! 👋 Я — помічник магазину LOSSO. Допоможу з вибором товарів, розкажу про доставку та оплату. Чим можу допомогти?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -20,12 +27,12 @@ export default function ChatWidget() {
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
-  }, [messages]);
+  }, [messages, loading]);
 
-  const send = async () => {
-    const text = input.trim();
+  const send = async (textOrEvent) => {
+    const text = typeof textOrEvent === "string" ? textOrEvent.trim() : input.trim();
     if (!text || loading) return;
-    setInput("");
+    if (typeof textOrEvent !== "string") setInput("");
     setMessages((m) => [...m, { role: "user", content: text }]);
     setLoading(true);
     try {
@@ -94,9 +101,26 @@ export default function ChatWidget() {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="rounded-2xl px-4 py-2 bg-losso-sand text-losso-muted text-sm">
-                  Думаю...
+                <div className="rounded-2xl px-4 py-3 bg-losso-sand text-losso-muted text-sm flex gap-1">
+                  <span className="w-2 h-2 rounded-full bg-losso-sage animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-2 h-2 rounded-full bg-losso-sage animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-2 h-2 rounded-full bg-losso-sage animate-bounce" style={{ animationDelay: "300ms" }} />
                 </div>
+              </div>
+            )}
+            {messages.length === 1 && !loading && (
+              <div className="flex flex-wrap gap-2 pt-2">
+                <p className="w-full text-xs font-semibold text-losso-muted mb-1">Часті запитання:</p>
+                {QUICK_QUESTIONS.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={() => send(q)}
+                    className="rounded-full border border-losso-sand bg-white px-3 py-1.5 text-xs font-medium text-losso-stone hover:border-losso-sage hover:text-losso-sage transition-colors"
+                  >
+                    {q}
+                  </button>
+                ))}
               </div>
             )}
           </div>
@@ -107,14 +131,14 @@ export default function ChatWidget() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send()}
+                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send(e)}
                 placeholder="Напишіть повідомлення..."
                 className="flex-1 rounded-xl border border-losso-sand px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-losso-sage/50 focus:border-losso-sage min-h-[44px]"
                 disabled={loading}
               />
               <button
                 type="button"
-                onClick={send}
+                onClick={() => send()}
                 disabled={loading || !input.trim()}
                 className="rounded-xl bg-losso-sage text-white px-4 py-2.5 text-sm font-medium hover:bg-losso-sage-dark disabled:opacity-50 transition-colors min-h-[44px] shrink-0"
               >

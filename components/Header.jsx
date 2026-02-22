@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, X, ShoppingBag } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, ShoppingBag, Search } from "lucide-react";
+import { products } from "@/data/products";
+import SearchOverlay from "./SearchOverlay";
 
 const navLinks = [
   { href: "/", label: "Головна" },
@@ -11,11 +13,38 @@ const navLinks = [
   { href: "/contacts", label: "Контакти" },
 ];
 
+function getCartCount() {
+  if (typeof window === "undefined") return 0;
+  try {
+    const cart = JSON.parse(localStorage.getItem("losso-cart") || "[]");
+    return cart.reduce((s, i) => s + (i.qty || 1), 0);
+  } catch { return 0; }
+}
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    setCartCount(getCartCount());
+    const onStorage = () => setCartCount(getCartCount());
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  useEffect(() => {
+    const h = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", h, { passive: true });
+    return () => window.removeEventListener("scroll", h);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-losso-sand/80 bg-losso-cream/95 backdrop-blur-sm">
+    <>
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} query={searchQuery} setQuery={setSearchQuery} products={products} />
+      <header className={`sticky top-0 z-50 transition-all duration-300 bg-white/90 backdrop-blur-md ${scrolled ? "border-b border-losso-sand shadow-sm" : "border-b border-transparent"}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 md:h-18">
         <Link
           href="/"
@@ -35,22 +64,32 @@ export default function Header() {
               {label}
             </Link>
           ))}
+          <button type="button" onClick={() => setSearchOpen(true)} className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-losso-stone hover:bg-losso-sand/60 transition-colors" aria-label="Пошук">
+            <Search className="w-5 h-5" />
+          </button>
           <Link
             href="/cart"
-            className="ml-2 inline-flex items-center gap-2 rounded-full bg-losso-sage text-white px-4 py-2.5 text-sm font-medium hover:bg-losso-sage-dark transition-colors min-h-[44px]"
+            className="ml-1 relative inline-flex items-center gap-2 rounded-full bg-losso-sage text-white px-4 py-2.5 text-sm font-medium hover:bg-losso-sage-dark transition-colors min-h-[44px]"
           >
             <ShoppingBag className="w-4 h-4" aria-hidden />
             Кошик
+            {cartCount > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center px-1">{cartCount}</span>}
           </Link>
         </nav>
 
         <div className="flex md:hidden items-center gap-2">
+          <button type="button" onClick={() => setSearchOpen(true)} className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-losso-stone hover:bg-losso-sand/60" aria-label="Пошук">
+            <Search className="w-5 h-5" />
+          </button>
           <Link
             href="/cart"
+            className="relative min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-losso-sage text-white hover:bg-losso-sage-dark transition-colors"
+            aria-label="Кошик"
             className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-losso-sage text-white hover:bg-losso-sage-dark transition-colors"
             aria-label="Кошик"
           >
             <ShoppingBag className="w-5 h-5" />
+            {cartCount > 0 && <span className="absolute top-0 right-0 min-w-[16px] h-[16px] rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center">{cartCount}</span>}
           </Link>
           <button
             type="button"
@@ -85,5 +124,6 @@ export default function Header() {
         </nav>
       )}
     </header>
+    </>
   );
 }

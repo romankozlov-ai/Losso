@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { CHAT_SYSTEM_PROMPT } from "@/lib/chat-prompt";
 
-const KIMI_API_KEY = process.env.KIMI_API_KEY;
-const KIMI_BASE = "https://api.moonshot.ai/v1";
+const KIMI_API_KEY = process.env.KIMI_API_KEY?.trim();
+// Ключ з Kimi Code (sk-kimi-...) — api.kimi.com/coding; ключ з Moonshot — api.moonshot.ai
+const KIMI_BASE =
+  process.env.KIMI_API_BASE?.trim() ||
+  (KIMI_API_KEY?.startsWith("sk-kimi-")
+    ? "https://api.kimi.com/coding/v1"
+    : "https://api.moonshot.ai/v1");
 
 const FALLBACK_MESSAGE =
   "Чат тимчасово недоступний. Напишіть нам: lossotrade@gmail.com або зателефонуйте +380 (98) 040-25-00, +380 (93) 040-25-00.";
@@ -28,11 +33,40 @@ export async function POST(req) {
       );
     }
 
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY?.trim();
+    const GEMINI_MODEL = process.env.GEMINI_MODEL?.trim() || "gemini-2.0-flash";
+    if (GEMINI_API_KEY) {
+      try {
+        const geminiHistory = messages.map((m) => ({
+          role: m.role === "assistant" ? "model" : "user",
+          parts: [{ text: (m.content || "").trim() }],
+        })).filter((m) => m.parts[0].text.length > 0);
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              system_instruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] },
+              contents: geminiHistory,
+              generationConfig: { maxOutputTokens: 500, temperature: 0.7 },
+            }),
+          }
+        );
+        if (geminiRes.ok) {
+          const data = await geminiRes.json();
+          const text = data?.candidates?.[0]?.content?.parts?.map((p) => p.text).filter(Boolean).join("\n");
+          if (text) return NextResponse.json({ content: text });
+        }
+      } catch (_) {}
+    }
+
     if (!KIMI_API_KEY) {
       return NextResponse.json({ content: FALLBACK_MESSAGE }, { status: 200 });
     }
 
     const apiMessages = buildMessages(messages);
+    const isKimiCoding = KIMI_BASE.includes("api.kimi.com");
     const res = await fetch(`${KIMI_BASE}/chat/completions`, {
       method: "POST",
       headers: {
@@ -40,10 +74,10 @@ export async function POST(req) {
         Authorization: `Bearer ${KIMI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "kimi-k2.5",
+        model: isKimiCoding ? "kimi-for-coding" : "kimi-k2.5",
         max_tokens: 1024,
         messages: apiMessages,
-        thinking: { type: "disabled" },
+        ...(isKimiCoding ? {} : { thinking: { type: "disabled" } }),
       }),
     });
 

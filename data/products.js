@@ -1,68 +1,44 @@
+/**
+ * Товари з Prom (losso.com.ua). Фото: images.prom.ua
+ */
 export const products = [
-  {
-    id: "1",
-    name: "Кухонний таймер механічний магнітний LOSSO KT-160098",
-    price: 425,
-    categorySlug: "tovary-dlya-kukhni",
-    image: null,
-    inStock: true,
-  },
-  {
-    id: "2",
-    name: "Вишнечистка LOSSO Premium CF-25",
-    price: 330,
-    categorySlug: "tovary-dlya-kukhni",
-    image: null,
-    inStock: true,
-  },
-  {
-    id: "3",
-    name: "Точилка для ножів кухонна LOSSO Premium WS-04",
-    price: 385,
-    categorySlug: "tovary-dlya-kukhni",
-    image: null,
-    inStock: true,
-  },
-  {
-    id: "4",
-    name: "Вакуумна пробка для вина Losso Premium KSP-9118",
-    price: 185,
-    categorySlug: "tovary-dlya-kukhni",
-    image: null,
-    inStock: true,
-  },
-  {
-    id: "5",
-    name: "Нічник LOSSO з USB",
-    price: 299,
-    categorySlug: "nichnyky-svitilnyky",
-    image: null,
-    inStock: true,
-  },
-  {
-    id: "6",
-    name: "Годинник настінний LOSSO",
-    price: 450,
-    categorySlug: "godynnyky",
-    image: null,
-    inStock: true,
-  },
-  {
-    id: "7",
-    name: "Годинники настільні електронні дзеркальні Losso Premium (BT) з LED підсвічуванням і термометром (білі), будильник",
-    price: 690,
-    categorySlug: "godynnyky",
-    image: null,
-    inStock: true,
-    externalUrl: "https://losso.com.ua/ua/p1058879712-chasy-nastolnye-elektronnye.html",
-  },
+  { id: "1", prom_id: "2473254977", sku: "472753719", name: "Антиковзна стрічка проти ковзання для сходинок HF Antislip 5см*5м жовто-сіра", price: 299, oldPrice: null, badge: null, image: "https://images.prom.ua/6454785342_w400_h400_antiskolzyaschaya-lenta-protiv.jpg", inStock: true, categorySlug: "remontni-strichky", mainCategorySlug: "budivelni-instrumenty", prom_url: "https://losso.com.ua/p2473254977-antiskolzyaschaya-lenta-protiv.html", brand: "HF Antislip" },
+  { id: "2", prom_id: "1767871944", sku: "368097324", name: "Бінокль LOSSO Premium ARMY 10*50 тактичний з сіткою та компасом", price: 5999, oldPrice: null, badge: null, image: "https://images.prom.ua/4265995043_w400_h400_binokl-losso-premium.jpg", inStock: true, categorySlug: "optychni-prylady", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p1767871944-binokl-losso-premium.html", brand: "LOSSO" },
+  { id: "3", prom_id: "2563400604", sku: "498098254", name: "Годинник настінний безшумний з LED підсвічуванням LOSSO LN-30 \"Light Night\" білий (чорний обідок)", price: 990, oldPrice: null, badge: null, image: "https://images.prom.ua/6586008822_w400_h400_chasy-nastennye-besshumnye.jpg", inStock: true, categorySlug: "godynnyky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2563400604-chasy-nastennye-besshumnye.html", brand: "LOSSO" },
+  { id: "4", prom_id: "2289368308", sku: "444625043", name: "Годинник електронний настільний LOSSO Premium MULTICOLOR з LED підсвічуванням чорний", price: 625, oldPrice: null, badge: null, image: "https://images.prom.ua/6102362667_w400_h400_chasy-elektronnye-nastolnye.jpg", inStock: true, categorySlug: "godynnyky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2289368308-chasy-elektronnye-nastolnye.html", brand: "LOSSO" },
+  { id: "5", prom_id: "1853466961", sku: "380864805", name: "Ліхтарик для читання книг акумуляторний LOSSO LJC-182", price: 325, oldPrice: null, badge: "Хіт", image: "https://images.prom.ua/5243242959_w400_h400_fonarik-dlya-chteniya.jpg", inStock: true, categorySlug: "nichnyky-svitilnyky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p1853466961-fonarik-dlya-chteniya.html", brand: "LOSSO" },
+  { id: "6", prom_id: "2667837107", sku: "526301999", name: "Парасолька автоматична двошарова від дощу та сонця LOSSO Elite, 105 см, жовта", price: 770, oldPrice: null, badge: null, image: "https://images.prom.ua/6732732969_w400_h400_zont-avtomaticheskij-dvuhslojnyj.jpg", inStock: true, categorySlug: "parasolky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2667837107-zont-avtomaticheskij-dvuhslojnyj.html", brand: "LOSSO" },
+  { id: "7", prom_id: "1240886575", sku: "244217143", name: "Секатор садовий професійний Shuang Song SB-22 PRO", price: 990, oldPrice: null, badge: null, image: "https://images.prom.ua/2558970466_w400_h400_sekator-sadovyj-professionalnyj.jpg", inStock: true, categorySlug: "sekatory", mainCategorySlug: "tovary-dlya-sadu", prom_url: "https://losso.com.ua/p1240886575-sekator-sadovyj-professionalnyj.html", brand: "Shuang Song" },
+  { id: "8", prom_id: "2436303272", sku: "464557794", name: "Годинник електронний настільний LOSSO Premium 3D-LUMITIME з LED підсвічуванням чорний", price: 850, oldPrice: null, badge: null, image: "https://images.prom.ua/6399790388_w400_h400_chasy-elektronnye-nastolnye.jpg", inStock: true, categorySlug: "godynnyky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2436303272-chasy-elektronnye-nastolnye.html", brand: "LOSSO" },
+  { id: "9", prom_id: "1701108513", sku: "358695114", name: "Проектор зоряного неба Losso Stars — LED нічник проектор НЛО \"Зірки\", домашній планетарій", price: 1999, oldPrice: null, badge: "Хіт", image: "https://images.prom.ua/4055155805_w400_h400_proektor-zvezdnogo-neba.jpg", inStock: true, categorySlug: "nichnyky-svitilnyky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p1701108513-proektor-zvezdnogo-neba.html", brand: "LOSSO" },
+  { id: "10", prom_id: "1774817299", sku: "368732319", name: "Проектор зоряного неба акумуляторний Losso НЛО LJC-133-mini — дитячий LED нічник проектор НЛО білий", price: 599, oldPrice: null, badge: null, image: "https://images.prom.ua/4287239132_w400_h400_proektor-zvezdnogo-neba.jpg", inStock: true, categorySlug: "nichnyky-svitilnyky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p1774817299-proektor-zvezdnogo-neba.html", brand: "LOSSO" },
+  { id: "11", prom_id: "2428642263", sku: "463250014", name: "Нічник музичний \"Місячна гавань\" LOSSO LJC-212 рожевий", price: 899, oldPrice: null, badge: null, image: "https://images.prom.ua/6387343134_w400_h400_nochnik-muzykalnyj-lunnaya.jpg", inStock: true, categorySlug: "nichnyky-svitilnyky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2428642263-nochnik-muzykalnyj-lunnaya.html", brand: "LOSSO" },
+  { id: "12", prom_id: "2425422566", sku: "462834114", name: "Нічник дитячий силіконовий Їжачок LOSSO LJC-224 жовтий", price: 494.5, oldPrice: 575, badge: "Акція", image: "https://images.prom.ua/6383244932_w400_h400_nochnik-detskij-silikonovyj.jpg", inStock: true, categorySlug: "nichnyky-svitilnyky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2425422566-nochnik-detskij-silikonovyj.html", brand: "LOSSO" },
+  { id: "13", prom_id: "1506886901", sku: "329374312", name: "Нічник дитячий силіконовий Китенок LOSSO LJC-151", price: 495, oldPrice: 550, badge: "Акція", image: "https://images.prom.ua/3502725365_w400_h400_nochnik-detskij-silikonovyj.jpg", inStock: true, categorySlug: "nichnyky-svitilnyky", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p1506886901-nochnik-detskij-silikonovyj.html", brand: "LOSSO" },
+  { id: "14", prom_id: "2281223771", sku: "444176891", name: "Точилка для олівців електрична Tenwin 8307 з вольфрамовим лезом", price: 375, oldPrice: null, badge: null, image: "https://images.prom.ua/6073400464_w400_h400_tochilka-dlya-karandashej.jpg", inStock: true, categorySlug: "kantseliarske", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2281223771-tochilka-dlya-karandashej.html", brand: "Tenwin" },
+  { id: "15", prom_id: "2216286235", sku: "432714125", name: "Електрична точилка для олівців Tenwin 8031 USB, біла", price: 750, oldPrice: null, badge: null, image: "https://images.prom.ua/5834155005_w400_h400_elektricheskaya-tochilka-dlya.jpg", inStock: true, categorySlug: "kantseliarske", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2216286235-elektricheskaya-tochilka-dlya.html", brand: "Tenwin" },
+  { id: "16", prom_id: "1098262608", sku: "167586931", name: "Караоке мікрофон Losso K6 Premium золотий (стерео звук)", price: 1100, oldPrice: null, badge: "Хіт", image: "https://images.prom.ua/2590753862_w400_h400_karaoke-mikrofon-losso.jpg", inStock: true, categorySlug: "karaoke-mikrofony", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p1098262608-karaoke-mikrofon-losso.html", brand: "LOSSO" },
+  { id: "17", prom_id: "2024563742", sku: "406362150", name: "Караоке мікрофон з колонкою LOSSO P3 бездротовий рожевий", price: 975, oldPrice: null, badge: null, image: "https://images.prom.ua/5126003815_w400_h400_karaoke-mikrofon-s.jpg", inStock: true, categorySlug: "karaoke-mikrofony", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2024563742-karaoke-mikrofon-kolonkoj.html", brand: "LOSSO" },
+  { id: "18", prom_id: "1475022512", sku: "320054932", name: "Ювелірні ваги LOSSO CX-298 високоточні 200г / 0,01г", price: 490, oldPrice: null, badge: null, image: "https://images.prom.ua/3339220888_w400_h400_yuvelirnye-vesy-losso.jpg", inStock: true, categorySlug: "yuvelirni-vahy", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p1475022512-yuvelirnye-vesy-losso.html", brand: "LOSSO" },
+  { id: "19", prom_id: "2699738683", sku: "533671604", name: "Кухонні ваги електронні LOSSO G-07 акумуляторні з окремим магнітним дисплеєм", price: 875, oldPrice: null, badge: "Новинка", image: "https://images.prom.ua/6778425199_w400_h400_kuhonnye-vesy-elektronnye.jpg", inStock: true, categorySlug: "tovary-dlya-kukhni", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2699738683-kuhonnye-vesy-elektronnye.html", brand: "LOSSO" },
+  { id: "20", prom_id: "2928878270", sku: "id_981", name: "Секатор садовий професійний силовий з ковадлом Sagawata SW-827B для твердих гілок", price: 650, oldPrice: null, badge: "Новинка", image: "https://images.prom.ua/7083032939_w400_h400_sekator-sadovij-profesijnij.jpg", inStock: true, categorySlug: "sekatory", mainCategorySlug: "tovary-dlya-sadu", prom_url: "https://losso.com.ua/ua/p2928878270-sekator-sadovyj-professioanalnyj.html", brand: "SAGAWATA" },
+  { id: "21", prom_id: "1734707845", sku: "244217143", name: "Устілки з підігрівом хімічні (теплі устілки), 37-39 розмір (1 пара)", price: 30, oldPrice: null, badge: null, image: "https://images.prom.ua/4159399984_w400_h400_stelki-s-podogrevom.jpg", inStock: false, categorySlug: "inshi-tovary-dlya-domu", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p1734707845-stelki-podogrevom-himicheskie.html", brand: "LOSSO" },
+  { id: "22", prom_id: "2869549584", sku: "569437096", name: "Комплект зволожувача повітря LOSSO H-40 з електронним сенсорним термогігрометром LOSSO TG-04", price: 999, oldPrice: null, badge: null, image: "https://images.prom.ua/7002378726_w400_h400_komplekt-uvlazhnitelya-vozduha.jpg", inStock: false, categorySlug: "zvolozhuvachy", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p2869549584-komplekt-uvlazhnitelya-vozduha.html", brand: "LOSSO" },
+  { id: "23", prom_id: "1738204988", sku: "363887076", name: "Камінний вентилятор тепловий LOSSO F4", price: 1599, oldPrice: null, badge: null, image: "https://images.prom.ua/4170611227_w400_h400_kaminnyj-ventilyator-teplovoj.jpg", inStock: false, categorySlug: "ventyliatory", mainCategorySlug: "tovary-dlya-domu", prom_url: "https://losso.com.ua/p1738204988-kaminnyj-ventilyator-teplovoj.html", brand: "LOSSO" },
+  { id: "24", prom_id: "1586040622", sku: "337635916", name: "Секатор щепальний Professional Grafting Tool — LOSSO SC-8201, щепальна стрічка", price: 399, oldPrice: null, badge: null, image: "https://images.prom.ua/3677528089_w400_h400_sekator-privivochnyj-professional.jpg", inStock: false, categorySlug: "instrumenty-shcheplennya", mainCategorySlug: "tovary-dlya-sadu", prom_url: "https://losso.com.ua/p1586040622-sekator-privivochnyj-professional.html", brand: "LOSSO" },
+  { id: "25", prom_id: "1866405177", sku: "382847325", name: "Нано стрічка Ivy Grip Tape (2мм*5см*5м) клейка двостороння стрічка", price: 320, oldPrice: null, badge: null, image: "https://images.prom.ua/4589150110_w400_h400_nano-lenta-ivy.jpg", inStock: false, categorySlug: "remontni-strichky", mainCategorySlug: "budivelni-instrumenty", prom_url: "https://losso.com.ua/p1866405177-nano-lenta-ivy.html", brand: "Ivy Grip Tape" },
 ];
 
 export function getProductById(id) {
-  return products.find((p) => p.id === id) ?? null;
+  return products.find((p) => p.id === String(id)) ?? null;
 }
 
-export function getProductsByCategory(categorySlug) {
-  if (!categorySlug) return products;
-  return products.filter((p) => p.categorySlug === categorySlug);
+/** slug — головна категорія (tovary-dlya-domu) або підкатегорія (godynnyky) */
+export function getProductsByCategory(slug) {
+  if (!slug) return products;
+  const mainSlugs = ["tovary-dlya-domu", "tovary-dlya-sadu", "budivelni-instrumenty", "energozabezpechennya"];
+  if (mainSlugs.includes(slug)) {
+    return products.filter((p) => p.mainCategorySlug === slug);
+  }
+  return products.filter((p) => p.categorySlug === slug);
 }

@@ -3,6 +3,8 @@ import { Lora, Manrope } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
+import ScrollToTop from "@/components/ScrollToTop";
+import { WishlistProvider } from "@/context/WishlistContext";
 
 const lora = Lora({
   subsets: ["latin", "cyrillic"],
@@ -32,10 +34,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="uk" className={`scroll-smooth ${lora.variable} ${manrope.variable}`}>
       <body className="min-h-screen flex flex-col font-sans bg-losso-cream text-losso-stone antialiased overflow-x-hidden">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <ChatWidget />
+        <WishlistProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <ChatWidget />
+          <ScrollToTop />
+        </WishlistProvider>
       </body>
     </html>
   );

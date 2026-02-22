@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCategoryBySlug } from "@/data/categories";
 import { getProductsByCategory } from "@/data/products";
 import { notFound } from "next/navigation";
+import ProductGrid from "@/components/ProductGrid";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -19,36 +20,29 @@ export default async function CategoryPage({ params }) {
   if (!category) notFound();
 
   const items = getProductsByCategory(slug);
+  const parent = !category.isMain && category.parentSlug ? getCategoryBySlug(category.parentSlug) : null;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <nav className="text-sm text-stone-500 mb-4">
-        <Link href="/" className="hover:text-stone-700">Головна</Link>
-        <span className="mx-2">/</span>
-        <Link href="/catalog" className="hover:text-stone-700">Каталог</Link>
-        <span className="mx-2">/</span>
-        <span className="text-stone-800">{category.name}</span>
+      <nav className="text-sm text-losso-muted mb-4 flex items-center gap-2 flex-wrap">
+        <Link href="/" className="hover:text-losso-sage">Головна</Link>
+        <span>/</span>
+        <Link href="/catalog" className="hover:text-losso-sage">Каталог</Link>
+        {parent && (
+          <>
+            <span>/</span>
+            <Link href={`/catalog/${category.parentSlug}`} className="hover:text-losso-sage">{parent.name}</Link>
+          </>
+        )}
+        <span>/</span>
+        <span className="text-losso-stone font-medium">{category.name}</span>
       </nav>
-      <h1 className="text-2xl font-bold mb-6">{category.name}</h1>
+      <h1 className="text-2xl font-bold text-losso-stone mb-6">{category.name}</h1>
 
       {items.length === 0 ? (
-        <p className="text-stone-600">У цій категорії поки немає товарів.</p>
+        <p className="text-losso-muted py-8">У цій категорії поки немає товарів.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {items.map((product) => (
-            <Link
-              key={product.id}
-              href={`/product/${product.id}`}
-              className="block rounded-xl border border-stone-200 bg-white p-4 hover:shadow-lg"
-            >
-              <div className="aspect-square bg-stone-100 rounded-lg mb-3 flex items-center justify-center text-stone-400 text-sm">
-                Фото
-              </div>
-              <h2 className="font-medium text-stone-800 line-clamp-2 mb-2">{product.name}</h2>
-              <p className="text-stone-600 font-semibold">{product.price} ₴</p>
-            </Link>
-          ))}
-        </div>
+        <ProductGrid products={items} />
       )}
     </div>
   );
