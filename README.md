@@ -96,8 +96,8 @@ npm run dev
 
 ## Git і деплой (Vercel)
 
-- **Робоча гілка:** тільки **`master`**. Усі зміни робімо і пушимо з неї.
-- **Деплой:** після `git push` Vercel автоматично збирає й публікує сайт.
+- **Робоча гілка:** тільки **`master`**. Default branch на GitHub — `master`.
+- **Деплой:** після `git push origin master` Vercel автоматично збирає й публікує сайт.
 - **Що робити:** завжди працюй у гілці `master`, потім:
   ```bash
   cd /home/user/projects/Losso
@@ -106,7 +106,7 @@ npm run dev
   git commit -m "опис змін"
   git push
   ```
-- **У Vercel** для проекту Losso встанови **Production Branch = master** (Settings → Git), щоб продакшен збирався саме з `master`.
+- **Важливо:** у Vercel для проекту Losso має бути **Production Branch = master** (Settings → Git). Якщо там було `main` — зміни на `master`, інакше деплой не оновиться.
 - **Сайт:** https://losso-lemon.vercel.app/
 
 ## Наступні кроки
