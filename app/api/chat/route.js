@@ -1,16 +1,20 @@
 import { NextResponse } from "next/server";
 import { CHAT_SYSTEM_PROMPT } from "@/lib/chat-prompt";
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const KIMI_API_KEY = process.env.KIMI_API_KEY;
+const KIMI_BASE = "https://api.moonshot.ai/v1";
 
 const FALLBACK_MESSAGE =
   "Чат тимчасово недоступний. Напишіть нам: lossotrade@gmail.com або зателефонуйте +380 (98) 040-25-00, +380 (93) 040-25-00.";
 
-function buildClaudeMessages(messages) {
-  return messages.map((m) => ({
-    role: m.role === "user" ? "user" : m.role === "assistant" ? "assistant" : "user",
-    content: (m.content || "").trim(),
-  })).filter((m) => m.content.length > 0);
+function buildMessages(messages) {
+  const out = [{ role: "system", content: CHAT_SYSTEM_PROMPT }];
+  for (const m of messages) {
+    const role = m.role === "assistant" ? "assistant" : "user";
+    const content = (m.content || "").trim();
+    if (content.length > 0) out.push({ role, content });
+  }
+  return out;
 }
 
 export async function POST(req) {
@@ -24,29 +28,28 @@ export async function POST(req) {
       );
     }
 
-    if (!ANTHROPIC_API_KEY) {
+    if (!KIMI_API_KEY) {
       return NextResponse.json({ content: FALLBACK_MESSAGE }, { status: 200 });
     }
 
-    const apiMessages = buildClaudeMessages(messages);
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const apiMessages = buildMessages(messages);
+    const res = await fetch(`${KIMI_BASE}/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        Authorization: `Bearer ${KIMI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "claude-3-5-sonnet-20241022",
+        model: "kimi-k2.5",
         max_tokens: 1024,
-        system: CHAT_SYSTEM_PROMPT,
         messages: apiMessages,
+        thinking: { type: "disabled" },
       }),
     });
 
     if (!res.ok) {
       const err = await res.text();
-      console.error("Claude API error:", res.status, err);
+      console.error("Kimi API error:", res.status, err);
       return NextResponse.json(
         {
           content:
@@ -57,9 +60,8 @@ export async function POST(req) {
     }
 
     const data = await res.json();
-    const textBlocks = (data.content || []).filter((c) => c.type === "text").map((c) => c.text);
-    const text = textBlocks.join("").trim();
-    const content = text || FALLBACK_MESSAGE;
+    const content =
+      data.choices?.[0]?.message?.content?.trim() || FALLBACK_MESSAGE;
     return NextResponse.json({ content });
   } catch (e) {
     console.error("Chat API error:", e);
