@@ -97,17 +97,35 @@ npm run dev
 ## Git і деплой (Vercel)
 
 - **Робоча гілка:** тільки **`master`**. Default branch на GitHub — `master`.
-- **Деплой:** після `git push origin master` Vercel автоматично збирає й публікує сайт.
-- **Що робити:** завжди працюй у гілці `master`, потім:
-  ```bash
-  cd /home/user/projects/Losso
-  git checkout master
-  git add .
-  git commit -m "опис змін"
-  git push
-  ```
-- **Важливо:** у Vercel для проекту Losso має бути **Production Branch = master** (Settings → Git). Якщо там було `main` — зміни на `master`, інакше деплой не оновиться.
 - **Сайт:** https://losso-lemon.vercel.app/
+
+### Підключити репозиторій до Vercel (один раз)
+
+1. Зайдіть на [vercel.com](https://vercel.com) → **Add New** → **Project**.
+2. **Import** репозиторій `romankozlov-ai/Losso` з GitHub (увійдіть через GitHub, якщо потрібно).
+3. **Root Directory:** залиште порожнім або `./` (проект у корені репо).
+4. **Framework Preset:** Next.js. Build Command: `npm run build`. Output: за замовчуванням.
+5. У **Settings → Git** встановіть **Production Branch:** `master`.
+6. Додайте змінні оточення (Settings → Environment Variables): `GEMINI_API_KEY`, `KIMI_API_KEY`, за потреби `SALESDRIVE_*`, `NOVAPOSHTA_API_KEY` — з `.env.example`.
+7. Натисніть **Deploy**. Далі кожен `git push origin master` буде автоматично запускати збірку й деплой.
+
+### Деплой вручну (CLI)
+
+Якщо потрібно задеплоїти з терміналу без очікування авто-деплою:
+
+```bash
+cd /home/user/projects/Losso
+npx vercel login    # один раз: відкриється браузер для входу
+npm run deploy      # або: npx vercel --prod
+```
+
+Або з токеном (Vercel → Settings → Tokens):
+
+```bash
+VERCEL_TOKEN=ваш_токен npx vercel --prod
+```
+
+- **Важливо:** у Vercel для проекту має бути **Production Branch = master**. Інакше пуш у `master` не оновить продакшен.
 
 ## Наступні кроки
 

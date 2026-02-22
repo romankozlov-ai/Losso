@@ -6,7 +6,8 @@
     "dev": "node -e \"require(require('path').resolve(process.env.INIT_CWD || process.cwd(), 'scripts', 'run-dev.js'))\"",
     "build": "node node_modules/next/dist/bin/next build",
     "start": "node node_modules/next/dist/bin/next start",
-    "lint": "node node_modules/next/dist/bin/next lint"
+    "lint": "node node_modules/next/dist/bin/next lint",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "axios": "^1.13.5",
