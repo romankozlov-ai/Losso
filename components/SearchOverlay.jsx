@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Search, X } from "lucide-react";
 
 export default function SearchOverlay({ open, onClose, query, setQuery, products }) {
@@ -21,7 +22,9 @@ export default function SearchOverlay({ open, onClose, query, setQuery, products
 
   return (
     <div
-      className={`fixed inset-0 z-[200] transition-opacity duration-300 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+      className={`fixed inset-0 z-[200] transition-opacity duration-300 ${
+        open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      }`}
       style={{ background: "rgba(0,0,0,.5)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
@@ -42,7 +45,10 @@ export default function SearchOverlay({ open, onClose, query, setQuery, products
           />
           <button
             type="button"
-            onClick={() => { onClose(); setQuery(""); }}
+            onClick={() => {
+              onClose();
+              setQuery("");
+            }}
             className="p-2 rounded-full hover:bg-losso-sand text-losso-muted"
             aria-label="Закрити"
           >
@@ -60,11 +66,25 @@ export default function SearchOverlay({ open, onClose, query, setQuery, products
                   className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-losso-cream transition-colors"
                 >
                   <div className="w-11 h-11 rounded-lg bg-losso-sand/50 flex items-center justify-center overflow-hidden shrink-0">
-                    {p.image ? <img src={p.image} alt="" className="w-full h-full object-cover" /> : <span className="text-losso-muted text-xs">Фото</span>}
+                    {p.image ? (
+                      <Image
+                        src={p.image}
+                        alt={p.name}
+                        width={44}
+                        height={44}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-losso-muted text-xs">Фото</span>
+                    )}
                   </div>
                   <div className="min-w-0">
-                    <div className="font-medium text-losso-stone truncate">{p.name}</div>
-                    <div className="text-sm font-semibold text-losso-sage">{p.price} ₴</div>
+                    <div className="font-medium text-losso-stone truncate">
+                      {p.name}
+                    </div>
+                    <div className="text-sm font-semibold text-losso-sage">
+                      {p.price} ₴
+                    </div>
                   </div>
                 </Link>
               ))
@@ -77,3 +97,4 @@ export default function SearchOverlay({ open, onClose, query, setQuery, products
     </div>
   );
 }
+

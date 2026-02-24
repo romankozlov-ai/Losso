@@ -2,15 +2,18 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-      <h1 className="text-2xl font-bold mb-2">Сторінку не знайдено</h1>
-      <p className="text-stone-600 mb-6">Такої сторінки немає на сайті.</p>
-      <Link
-        href="/"
-        className="inline-block rounded-lg bg-stone-800 text-white px-4 py-2 font-medium hover:bg-stone-700"
-      >
-        На головну
-      </Link>
+    <div className="min-h-screen flex items-center justify-center text-center px-4">
+      <div>
+        <h1 className="text-6xl font-bold text-green-800 mb-4">404</h1>
+        <p className="text-xl text-gray-600 mb-6">Сторінку не знайдено</p>
+        <Link
+          href="/"
+          className="px-6 py-3 bg-green-800 text-white rounded-full font-medium hover:bg-green-900 transition-colors"
+        >
+          На головну
+        </Link>
+      </div>
     </div>
   );
 }
+

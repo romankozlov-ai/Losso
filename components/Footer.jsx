@@ -34,6 +34,12 @@ export default function Footer() {
               <li>
                 <Link href="/contacts" className="block py-2 hover:text-white">Контакти</Link>
               </li>
+              <li>
+                <Link href="/privacy-policy" className="block py-2 hover:text-white">Політика конфіденційності</Link>
+              </li>
+              <li>
+                <Link href="/oferta" className="block py-2 hover:text-white">Публічна оферта</Link>
+              </li>
             </ul>
           </div>
           <div>

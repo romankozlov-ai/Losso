@@ -57,8 +57,13 @@ export async function POST(req) {
           const data = await geminiRes.json();
           const text = data?.candidates?.[0]?.content?.parts?.map((p) => p.text).filter(Boolean).join("\n");
           if (text) return NextResponse.json({ content: text });
+        } else {
+          const errBody = await geminiRes.text();
+          console.error("Gemini API error:", geminiRes.status, errBody);
         }
-      } catch (_) {}
+      } catch (e) {
+        console.error("Gemini request failed:", e?.message || e);
+      }
     }
 
     if (!KIMI_API_KEY) {
