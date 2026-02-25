@@ -30,23 +30,40 @@ export const metadata = {
   keywords: [
     "LOSSO",
     "товари для дому",
+    "товари для саду",
     "інтернет-магазин",
     "Україна",
     "годинники",
     "нічники",
+    "караоке мікрофони",
   ],
+  authors: [{ name: "LOSSО" }],
   openGraph: {
     title: "LOSSO — інтернет-магазин товарів для дому та саду",
     description:
-      "Годинники, нічники, ваги, товари для кухні та саду. Оптом і в роздріб.",
+      "Годинники, нічники, ваги, товари для кухні та саду. Оптом і в роздріб. Доставка по Україні.",
     url: "https://losso-lemon.vercel.app",
     siteName: "LOSSO",
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "LOSSO" }],
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "LOSSO — товари для дому та саду",
+      },
+    ],
     locale: "uk_UA",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "LOSSO — інтернет-магазин товарів для дому та саду",
+    description: "Годинники, нічники, ваги, товари для кухні та саду.",
+    images: ["/og-image.jpg"],
+  },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://losso-lemon.vercel.app" },
+  manifest: "/manifest.json",
 };
 
 export const viewport = {

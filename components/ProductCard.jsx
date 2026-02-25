@@ -11,6 +11,9 @@ const BADGE_CLASS = {
   Хіт: "bg-losso-sage text-white",
   Новинка: "bg-amber-500 text-white",
   Акція: "bg-red-600 text-white",
+  hit: "bg-losso-sage text-white",
+  new: "bg-amber-500 text-white",
+  sale: "bg-red-600 text-white",
 };
 
 function Stars({ rating }) {

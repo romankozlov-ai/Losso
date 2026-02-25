@@ -7,11 +7,40 @@ import ProductGrid from "@/components/ProductGrid";
 import AdvantagesSection from "@/components/AdvantagesSection";
 import ReviewsSection from "@/components/ReviewsSection";
 
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Торгова компанія LOSSO",
+  url: "https://losso-lemon.vercel.app",
+  logo: "https://losso-lemon.vercel.app/icon-512.png",
+  description: "Інтернет-магазин товарів для дому та саду",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "вул. Новопрорізна 4",
+    addressLocality: "Бориспіль",
+    addressRegion: "Київська область",
+    addressCountry: "UA",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+380980402500",
+    contactType: "sales",
+    availableLanguage: ["Ukrainian"],
+    areaServed: "UA",
+  },
+};
+
 export default function HomePage() {
   const featuredProducts = products.slice(0, 8);
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
+
       {/* Hero — Warm editorial */}
       <section className="relative min-h-[70vh] md:min-h-[85vh] flex flex-col justify-center px-4 sm:px-6 overflow-hidden">
         <div
@@ -32,7 +61,8 @@ export default function HomePage() {
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="font-sans text-lg sm:text-xl text-losso-muted max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed">
-              Годинники, нічники, ваги, товари для кухні та саду. Оптом і в роздріб. Доставка по всій Україні.
+              Годинники, нічники, ваги, товари для кухні та саду. Оптом і в
+              роздріб. Доставка по всій Україні.
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
@@ -62,7 +92,9 @@ export default function HomePage() {
                 href={`/catalog/${cat.slug}`}
                 className="block rounded-2xl border border-losso-sand bg-losso-cream p-5 hover:border-losso-sage/40 hover:shadow-md hover:shadow-losso-sage/5 transition-all"
               >
-                <span className="font-medium text-losso-stone">{cat.name}</span>
+                <span className="font-medium text-losso-stone">
+                  {cat.name}
+                </span>
               </Link>
             ))}
           </div>
@@ -120,8 +152,10 @@ export default function HomePage() {
               Про нас
             </h2>
             <p className="text-losso-muted leading-relaxed">
-              Інтернет-магазин товарів для дому та саду Losso пропонує оригінальну продукцію за привабливою ціною.
-              Широкий асортимент, доставка по Україні, зручна оплата та обмін згідно з законодавством.
+              Інтернет-магазин товарів для дому та саду Losso пропонує
+              оригінальну продукцію за привабливою ціною. Широкий асортимент,
+              доставка по Україні, зручна оплата та обмін згідно з
+              законодавством.
             </p>
           </div>
           <div>
@@ -132,7 +166,10 @@ export default function HomePage() {
               <li>+380 (98) 040-25-00</li>
               <li>+380 (93) 040-25-00</li>
               <li>
-                <a href="mailto:lossotrade@gmail.com" className="hover:text-losso-sage transition-colors">
+                <a
+                  href="mailto:lossotrade@gmail.com"
+                  className="hover:text-losso-sage transition-colors"
+                >
                   lossotrade@gmail.com
                 </a>
               </li>
