@@ -1,0 +1,21 @@
+{
+  "sessions": [
+    {
+      "id": "-1003781761225:1177549829",
+      "data": {
+        "order": {
+          "product": {
+            "id": "1037831384",
+            "name": "Степлер для підв'язки винограду LOSSO Тапенер SC-8105",
+            "price": 650,
+            "inStock": true
+          },
+          "qty": 1,
+          "step": "wait_name",
+          "delivery": "nova",
+          "payment": "card"
+        }
+      }
+    }
+  ]
+}
