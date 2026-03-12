@@ -1,7 +1,7 @@
 // Конфигурация бота LOSSO
 module.exports = {
   // Telegram
-  BOT_TOKEN: '8768892836:AAGyV8J-0PgbKpd7jT8spy7783b08J15O_E',
+  BOT_TOKEN: '8768892836:AAFmiUwVFyqgtEROGo1hFRHl2Jsa_HP9SQw',
   CHANNEL_ID: '@losso_shop',
   ADMIN_CHAT_ID: '1177549829',
   
