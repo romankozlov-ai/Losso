@@ -148,8 +148,7 @@ async function postToChannel(product) {
       reply_markup: {
         inline_keyboard: [
           [Markup.button.url(`${emoji} Купити за ${product.price} грн`, `https://t.me/losso_shop_bot?start=buy_${product.id}`)],
-          [Markup.button.url('🤖 AI помічник', 'https://t.me/losso_shop_bot')],
-          [Markup.button.url('📦 Дивитись всі товари', 'https://t.me/losso_shop_bot')]
+          [Markup.button.url('🤖 AI помічник', 'https://t.me/losso_shop_bot')]
         ]
       }
     });

@@ -147,8 +147,7 @@ async function postDailyProduct() {
           [Markup.button.url(`🛒 Купити за ${product.price} грн`, `https://t.me/losso_shop_bot?start=buy_${product.id}`)],
           [Markup.button.url('🤖 AI помічник', 'https://t.me/losso_shop_bot')],
           [
-            Markup.button.callback('👍 Цікаво', 'like_' + product.id),
-            Markup.button.callback('💬 Питання', 'question_' + product.id)
+            Markup.button.callback('👍 Цікаво', 'like_' + product.id)
           ]
         ]
       }

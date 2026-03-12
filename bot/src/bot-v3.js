@@ -36,6 +36,7 @@ db.run(`CREATE TABLE IF NOT EXISTS orders (
   branch TEXT,
   index_post TEXT,
   payment TEXT,
+  comment TEXT,
   status TEXT DEFAULT 'new',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
@@ -217,7 +218,7 @@ bot.hears('🛍️ Каталог', (ctx) => {
 });
 
 bot.hears('📞 Контакти', (ctx) => {
-  ctx.reply('📞 @losso_shop\n⏰ Пн-Пт: 9:00-18:00, Сб-Нд: 10:00-15:00\n🚚 Відправка до 14:00 — сьогодні');
+  ctx.reply('📞 @losso_shop\n⏰ Пн-Пт: 9:00-18:00, Сб-Нд: 10:00-15:00\n🚚 Відправка до 15:00 — сьогодні');
 });
 
 bot.hears('📋 Замовлення', (ctx) => {
@@ -436,12 +437,20 @@ bot.on('text', (ctx) => {
   // Шаг 3б: Відділення
   if (step === 'wait_branch') {
     order.branch = text;
-    return finish(ctx, userId);
+    order.step = 'wait_comment';
+    return ctx.reply('📝 Є коментар до замовлення? (напишіть текст або "ні"):');
   }
   
   // Шаг 3в: Індекс
   if (step === 'wait_index') {
     order.index = text;
+    order.step = 'wait_comment';
+    return ctx.reply('📝 Є коментар до замовлення? (напишіть текст або "ні"):');
+  }
+  
+  // Шаг 4: Коментар
+  if (step === 'wait_comment') {
+    order.comment = text.toLowerCase() === 'ні' || text.toLowerCase() === 'no' ? '' : text;
     return finish(ctx, userId);
   }
 });
@@ -754,26 +763,37 @@ bot.action(/like_(.+)/, async (ctx) => {
 });
 
 bot.action(/question_(.+)/, async (ctx) => {
+  const userId = ctx.from.id;
+  
   await ctx.answerCbQuery('💬 Переходь в особисті повідомлення!');
   
-  // Відправляємо повідомлення в канал з посиланням на бота
-  ctx.reply(
-    `🤖 Щоб задати питання про товар, напишіть мені в особисті повідомлення:\n\n` +
-    `👉 @losso_shop_bot\n\n` +
-    `Я допоможу з:\n` +
-    `• Характеристиками товарів\n` +
-    `• Порівнянням моделей\n` +
-    `• Доставкою та оплатою\n` +
-    `• Гарантією`,
-    { 
-      parse_mode: 'HTML',
-      reply_markup: {
-        inline_keyboard: [
-          [Markup.button.url('🤖 Написати боту', 'https://t.me/losso_shop_bot')]
-        ]
+  // Відправляємо ПРИВАТНЕ повідомлення користувачу
+  ctx.telegram.sendMessage(
+    userId, // Приватне повідомлення користувачу
+    `🤖 *AI помічник готовий допомогти!*\n\n` +
+    `Задайте ваше питання про товар, і я відповім:\n` +
+    `• Характеристики та можливості\n` +
+    `• Порівняння з іншими моделями\n` +
+    `• Доставка та оплата\n` +
+    `• Гарантія та повернення\n\n` +
+    `❓ *Напишіть ваше питання:*`,
+    { parse_mode: 'Markdown' }
+  ).catch(() => {
+    // Якщо не вдалося надіслати (користувач не запускав бота), відправляємо в канал з посиланням
+    ctx.reply(
+      `🤖 Щоб задати питання, напишіть мені в особисті повідомлення: @losso_shop_bot`,
+      { 
+        reply_markup: {
+          inline_keyboard: [
+            [Markup.button.url('🤖 Написати боту', 'https://t.me/losso_shop_bot')]
+          ]
+        }
       }
-    }
-  );
+    );
+  });
+  
+  // Додаємо користувача в AI режим
+  aiChatMode.add(userId);
 });
 
 // Фініш
@@ -796,9 +816,9 @@ function finish(ctx, userId) {
   
   // 💾 ЗБЕРІГАЄМО ЗАМОВЛЕННЯ В БД
   db.run(
-    `INSERT INTO orders (order_num, user_id, product_name, product_price, qty, total, name, phone, delivery, city, branch, index_post, payment)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [num, String(userId), o.product.name, o.product.price, o.qty, total, o.name, o.phone, o.delivery, o.city || null, o.branch || null, o.index || null, o.payment],
+    `INSERT INTO orders (order_num, user_id, product_name, product_price, qty, total, name, phone, delivery, city, branch, index_post, payment, comment)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [num, String(userId), o.product.name, o.product.price, o.qty, total, o.name, o.phone, o.delivery, o.city || null, o.branch || null, o.index || null, o.payment, o.comment || ''],
     (err) => {
       if (err) console.error('❌ Помилка збереження замовлення:', err.message);
       else console.log(`✅ Замовлення #${num} збережено в БД`);
@@ -822,6 +842,11 @@ function finish(ctx, userId) {
     msg += `*ФОП Мандрика Т.С.*\n`;
     msg += `*${total} грн*\n\n`;
     msg += `📎 *При оплаті вказуйте:* Замовлення #${num}\n\n`;
+    
+    if (o.comment) {
+      msg += `📝 *Коментар:* ${o.comment}\n\n`;
+    }
+    
     msg += `✉️ *Пришліть скріншот після оплати, будь ласка*\n\n`;
     msg += `З повагою, команда LOSSO\n`;
     msg += `📞 (098) 040 25 00\n`;
@@ -857,6 +882,11 @@ function finish(ctx, userId) {
     msg += `💰 *Накладений платіж*\n`;
     msg += `💵 *До оплати на пошті: ~${cod} грн*\n`;
     msg += `(товар ${total}₴ + доставка ~100₴ + комісія 20₴ + 2%)\n\n`;
+    
+    if (o.comment) {
+      msg += `📝 *Коментар:* ${o.comment}\n\n`;
+    }
+    
     msg += `👤 ${o.name}\n`;
     msg += `📞 +38${o.phone}\n\n`;
     msg += `З повагою, команда LOSSO`;
@@ -866,14 +896,20 @@ function finish(ctx, userId) {
   
   // Уведомление админу
   if (config.ADMIN_CHAT_ID) {
-    ctx.telegram.sendMessage(
-      config.ADMIN_CHAT_ID,
-      `🔔 Нове замовлення #${num}\n\n` +
+    let adminMsg = `🔔 Нове замовлення #${num}\n\n` +
       `🛍️ ${o.product.name} x${o.qty}\n` +
       `💰 ${total} грн (${o.payment === 'card' ? 'картка' : 'накладений'})\n` +
       `👤 ${o.name}\n` +
       `📞 +38${o.phone}\n` +
-      `${o.delivery === 'nova' ? `🚚 ${o.city}, відд. ${o.branch}` : `📮 ${o.index}`}`,
+      `${o.delivery === 'nova' ? `🚚 ${o.city}, відд. ${o.branch}` : `📮 ${o.index}`}`;
+    
+    if (o.comment) {
+      adminMsg += `\n📝 Коментар: ${o.comment}`;
+    }
+    
+    ctx.telegram.sendMessage(
+      config.ADMIN_CHAT_ID,
+      adminMsg,
       Markup.inlineKeyboard([
         [Markup.button.callback('✅ Оплачено', `paid_${num}`)],
         [Markup.button.callback('📦 Відправлено', `sent_${num}`)]
