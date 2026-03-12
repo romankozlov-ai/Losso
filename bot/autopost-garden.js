@@ -56,14 +56,29 @@ async function getGardenProducts() {
     'висоторіз', 'телескопічн', 'обрізн', 'пила садова'
   ];
   
+  // Исключаем запчасти и расходники (они не должны быть главными товарами)
+  const excludeKeywords = [
+    'лезо', 'леза', 'ремкомплект', 'ремонтний комплект',
+    'запчастини', 'деталі', 'пружина', 'ніж запасний', 'комплектуючі'
+  ];
+  
   const gardenProducts = offers
     .filter(offer => {
       const name = offer.name?.[0] || '';
+      const nameLower = name.toLowerCase();
       const available = offer.$.available === 'true';
+      
+      // Проверяем садовые ключевые слова
       const hasGardenKeyword = gardenKeywords.some(kw => 
-        name.toLowerCase().includes(kw.toLowerCase())
+        nameLower.includes(kw.toLowerCase())
       );
-      return available && hasGardenKeyword;
+      
+      // Исключаем запчасти и расходники
+      const isExcluded = excludeKeywords.some(kw => 
+        nameLower.includes(kw.toLowerCase())
+      );
+      
+      return available && hasGardenKeyword && !isExcluded;
     })
     .map(offer => ({
       id: offer.$.id,

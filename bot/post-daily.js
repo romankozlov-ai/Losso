@@ -36,12 +36,24 @@ async function getRandomProduct() {
   
   const posted = loadPosted();
   
+  // Исключаем запчасти (но НЕ скоби и стрічку - они нужны как комплекты)
+  const excludeKeywords = [
+    'лезо', 'леза', 'ремкомплект', 'ремонтний комплект',
+    'запчастини', 'деталі', 'пружина', 'ніж запасний', 'комплектуючі'
+  ];
+  
   const available = offers.filter(o => {
     const id = o.$.id;
+    const name = o.name?.[0] || '';
+    const nameLower = name.toLowerCase();
     const hasImage = o.picture?.[0];
     const inStock = o.$.available === 'true';
     const notPosted = !posted.postedIds.includes(id);
-    return hasImage && inStock && notPosted;
+    
+    // Исключаем запчасти
+    const isExcluded = excludeKeywords.some(kw => nameLower.includes(kw.toLowerCase()));
+    
+    return hasImage && inStock && notPosted && !isExcluded;
   });
   
   if (available.length === 0) {
