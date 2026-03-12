@@ -32,7 +32,7 @@ async function postToChannel() {
       reply_markup: {
         inline_keyboard: [
           [Markup.button.url('🛒 Купити', `https://t.me/losso_shop_bot?start=buy_${product.id}`)],
-          [Markup.button.url('💬 Написати боту', 'https://t.me/losso_shop_bot')]
+          [Markup.button.url('🤖 AI помічник', 'https://t.me/losso_shop_bot')]
         ]
       }
     });

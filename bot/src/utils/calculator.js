@@ -76,7 +76,7 @@ function calculateShippingTime() {
   if (hour < deadline) {
     return {
       today: true,
-      message: 'Ваше замовлення буде відправлено сьогодні до 17:00 📦'
+      message: 'Ваше замовлення буде відправлено сьогодні до 15:00 📦'
     };
   } else {
     return {

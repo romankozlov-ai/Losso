@@ -3,6 +3,8 @@ const config = require('../config/config');
 const fs = require('fs');
 const path = require('path');
 const { getAIResponse } = require('./deepseekAI');
+const { processUserQuestion, searchProducts } = require('./ai-products');
+const sqlite3 = require('sqlite3').verbose();
 
 if (!config.BOT_TOKEN) {
   console.error('❌ BOT_TOKEN не задан!');
@@ -11,7 +13,34 @@ if (!config.BOT_TOKEN) {
 
 const bot = new Telegraf(config.BOT_TOKEN);
 
-// Хранилище заказов по user_id (работает между чатами)
+// Підключення до SQLite БД
+const dbPath = path.join(__dirname, '../data/orders.db');
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) console.error('❌ Помилка підключення до БД:', err.message);
+  else console.log('✅ Підключено до SQLite БД');
+});
+
+// Створення таблиці замовлень
+db.run(`CREATE TABLE IF NOT EXISTS orders (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  order_num TEXT UNIQUE,
+  user_id TEXT,
+  product_name TEXT,
+  product_price INTEGER,
+  qty INTEGER,
+  total INTEGER,
+  name TEXT,
+  phone TEXT,
+  delivery TEXT,
+  city TEXT,
+  branch TEXT,
+  index_post TEXT,
+  payment TEXT,
+  status TEXT DEFAULT 'new',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)`);
+
+// Хранилище заказов по user_id (працює між чатами)
 const orders = new Map();
 
 // Хранилище истории чата для AI
@@ -34,7 +63,7 @@ try {
     const xml = fs.readFileSync(ymlPath, 'utf8');
     const offers = xml.match(/<offer[^\u003e]*>.*?\u003c\/offer\u003e/gs);
     if (offers) {
-      offers.slice(0, 30).forEach(offer => {
+      offers.forEach(offer => {
         const id = offer.match(/id="(\d+)"/)?.[1];
         const name = offer.match(/<name\u003e([^\u003c]+)\u003c\/name\u003e/)?.[1];
         const price = offer.match(/<price\u003e(\d+)\u003c\/price\u003e/)?.[1];
@@ -188,11 +217,41 @@ bot.hears('🛍️ Каталог', (ctx) => {
 });
 
 bot.hears('📞 Контакти', (ctx) => {
-  ctx.reply('📞 @losso_shop\n⏰ Пн-Пт: 9:00-18:00, Сб: 10:00-17:00\n🚚 Відправка до 15:00 — сьогодні');
+  ctx.reply('📞 @losso_shop\n⏰ Пн-Пт: 9:00-18:00, Сб-Нд: 10:00-15:00\n🚚 Відправка до 14:00 — сьогодні');
 });
 
 bot.hears('📋 Замовлення', (ctx) => {
-  ctx.reply('📋 У вас поки немає замовлень.');
+  const userId = ctx.from.id;
+  
+  // Читаємо замовлення з SQLite БД
+  db.all('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 5', [String(userId)], (err, rows) => {
+    if (err) {
+      console.error('❌ Помилка читання замовлень:', err.message);
+      return ctx.reply('📋 У вас поки немає замовлень.');
+    }
+    
+    if (!rows || rows.length === 0) {
+      return ctx.reply('📋 У вас поки немає замовлень.\n\n🛍️ Перейдіть у канал @losso_shop та оберіть товар!');
+    }
+    
+    let msg = '📋 <b>Ваші замовлення:</b>\n\n';
+    rows.forEach((order, index) => {
+      const statusEmoji = order.status === 'sent' ? '📦' : 
+                         order.status === 'paid' ? '💰' : 
+                         order.status === 'new' ? '⏳' : '📋';
+      msg += `${index + 1}. <b>Замовлення #${order.order_num}</b>\n`;
+      msg += `${statusEmoji} ${order.product_name}\n`;
+      msg += `💵 ${order.total} грн (${order.qty} шт)\n`;
+      if (order.delivery === 'nova') {
+        msg += `🚚 Нова Пошта: ${order.city || ''}, відд. ${order.branch || ''}\n`;
+      } else {
+        msg += `📮 Укрпошта: ${order.index_post || ''}\n`;
+      }
+      msg += `📅 ${new Date(order.created_at).toLocaleDateString('uk-UA')}\n\n`;
+    });
+    
+    ctx.replyWithHTML(msg);
+  });
 });
 
 // ========== AI ПОМОЩНИК ==========
@@ -224,7 +283,7 @@ bot.hears('👨‍💼 Зв\'язатися з менеджером', (ctx) => {
     `📧 Email: lossotrade@gmail.com\n\n` +
     `⏰ Графік роботи:\n` +
     `Пн-Пт: 9:00-18:00\n` +
-    `Сб: 10:00-17:00\n\n` +
+    `Сб-Нд: 10:00-15:00\n\n` +
     `✍️ Напишіть ваше питання тут — менеджер відповість найближчим часом.`
   );
   
@@ -260,28 +319,54 @@ bot.on('text', (ctx) => {
       );
     }
     
-    // DeepSeek AI интеграция
-    ctx.reply('🤖 Думаю...').then(async (loadingMsg) => {
+    // DeepSeek AI інтеграція з пошуком товарів
+    ctx.reply('🤖 Шукаю інформацію...').then(async (loadingMsg) => {
       try {
-        // Получаем историю чата
+        // Шукаємо релевантні товари
+        const searchResult = await processUserQuestion(text);
+        
+        // Формуємо запит до AI
+        let aiPrompt = text;
+        let productButtons = [];
+        
+        if (searchResult.hasProducts) {
+          aiPrompt = `Користувач питає: "${text}"\n\n` +
+                     `Знайдені товари з магазину LOSSO:\n${searchResult.context}\n\n` +
+                     `Дай відповідь на основі цих товарів. Якщо товарів декілька, порівняй їх. ` +
+                     `Відповідай українською, дружньо, з емодзі. Додай рекомендацію, який товар краще.`;
+          
+          // Кнопки для знайдених товарів
+          productButtons = searchResult.products.slice(0, 3).map(p => 
+            [Markup.button.url(`🛒 ${p.name.substring(0, 30)}...`, `https://t.me/losso_shop_bot?start=buy_${p.id}`)]
+          );
+        }
+        
+        // Отримуємо історію чату
         const history = aiChatHistory.get(userId) || [];
         
-        // Запрашиваем ответ от DeepSeek
-        const aiResponse = await getAIResponse(text, history);
+        // Запит до DeepSeek
+        const aiResponse = await getAIResponse(aiPrompt, history);
         
-        // Удаляем сообщение "Думаю..."
+        // Видаляємо "Думаю..."
         ctx.deleteMessage(loadingMsg.message_id);
         
-        // Сохраняем в историю
+        // Зберігаємо в історію
         history.push({ role: 'user', content: text });
         history.push({ role: 'assistant', content: aiResponse.answer });
-        // Храним последние 10 сообщений
         if (history.length > 20) history.shift();
         aiChatHistory.set(userId, history);
         
-        // Отправляем ответ
+        // Кнопки для відповіді
+        const keyboard = [
+          ...productButtons,
+          [Markup.button.callback('💬 Ще питання', 'continue_ai')],
+          [Markup.button.callback('👨‍💼 Зв\'язатися з менеджером', 'contact_manager')]
+        ];
+        
+        // Відправляємо відповідь з кнопками
         ctx.replyWithMarkdown(
-          aiResponse.answer + '\n\n_Ще питання? Напишіть або натисніть 👨‍💼 для менеджера_ 🤝'
+          aiResponse.answer,
+          Markup.inlineKeyboard(keyboard)
         );
         
       } catch (error) {
@@ -376,7 +461,7 @@ bot.action('contact_manager', async (ctx) => {
     `📧 Email: lossotrade@gmail.com\n\n` +
     `⏰ Графік роботи:\n` +
     `Пн-Пт: 9:00-18:00\n` +
-    `Сб: 10:00-17:00\n\n` +
+    `Сб-Нд: 10:00-15:00\n\n` +
     `✍️ Напишіть ваше питання тут — менеджер відповість найближчим часом.`
   );
   
@@ -612,22 +697,86 @@ bot.on('document', (ctx) => {
   }
 });
 
-// Обработка кнопок админа
+// Обробка кнопок адміна
 bot.action(/paid_(.+)/, async (ctx) => {
   const orderNum = ctx.match[1];
   await ctx.answerCbQuery('✅ Позначено як оплачено');
   ctx.reply(`✅ Замовлення #${orderNum} позначено як ОПЛАЧЕНО`);
-  // TODO: Отправить уведомление клиенту
+  
+  // Надсилаємо повідомлення клієнту
+  db.get('SELECT user_id FROM orders WHERE order_num = ?', [orderNum], (err, row) => {
+    if (err || !row) return;
+    const userId = row.user_id;
+    ctx.telegram.sendMessage(userId, 
+      `✅ *Оплата отримана!*\n\n` +
+      `Ваше замовлення #${orderNum} оплачено.\n` +
+      `Скоро відправимо і надішлемо трек-номер.`,
+      { parse_mode: 'Markdown' }
+    ).catch(() => {});
+  });
+  
+  // Оновлюємо статус
+  db.run('UPDATE orders SET status = ? WHERE order_num = ?', ['paid', orderNum]);
 });
 
 bot.action(/sent_(.+)/, async (ctx) => {
   const orderNum = ctx.match[1];
   await ctx.answerCbQuery('📦 Позначено як відправлено');
   ctx.reply(`📦 Замовлення #${orderNum} позначено як ВІДПРАВЛЕНО`);
-  // TODO: Отправить трек-номер клиенту
+  
+  // Надсилаємо повідомлення клієнту
+  db.get('SELECT user_id, delivery, city, branch, index_post FROM orders WHERE order_num = ?', [orderNum], (err, row) => {
+    if (err || !row) return;
+    const userId = row.user_id;
+    let deliveryInfo = '';
+    if (row.delivery === 'nova') {
+      deliveryInfo = `\n🚚 Нова Пошта: ${row.city}, відд. ${row.branch}`;
+    } else {
+      deliveryInfo = `\n📮 Укрпошта: ${row.index_post}`;
+    }
+    
+    ctx.telegram.sendMessage(userId,
+      `📦 *Замовлення відправлено!*\n\n` +
+      `Ваше замовлення #${orderNum} вже в дорозі.\n` +
+      `Очікуйте SMS від перевізника.${deliveryInfo}\n\n` +
+      `Дякуємо за покупку! 💚`,
+      { parse_mode: 'Markdown' }
+    ).catch(() => {});
+  });
+  
+  // Оновлюємо статус
+  db.run('UPDATE orders SET status = ? WHERE order_num = ?', ['sent', orderNum]);
 });
 
-// Финиш
+// Обробка кнопок реакцій з постів (like, question)
+bot.action(/like_(.+)/, async (ctx) => {
+  await ctx.answerCbQuery('👍 Дякуємо за відгук!');
+});
+
+bot.action(/question_(.+)/, async (ctx) => {
+  await ctx.answerCbQuery('💬 Переходь в особисті повідомлення!');
+  
+  // Відправляємо повідомлення в канал з посиланням на бота
+  ctx.reply(
+    `🤖 Щоб задати питання про товар, напишіть мені в особисті повідомлення:\n\n` +
+    `👉 @losso_shop_bot\n\n` +
+    `Я допоможу з:\n` +
+    `• Характеристиками товарів\n` +
+    `• Порівнянням моделей\n` +
+    `• Доставкою та оплатою\n` +
+    `• Гарантією`,
+    { 
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [
+          [Markup.button.url('🤖 Написати боту', 'https://t.me/losso_shop_bot')]
+        ]
+      }
+    }
+  );
+});
+
+// Фініш
 function finish(ctx, userId) {
   const o = orders.get(userId);
   if (!o) {
@@ -644,6 +793,17 @@ function finish(ctx, userId) {
   
   // Сохраняем номер заказа для дальнейшего
   o.orderNum = num;
+  
+  // 💾 ЗБЕРІГАЄМО ЗАМОВЛЕННЯ В БД
+  db.run(
+    `INSERT INTO orders (order_num, user_id, product_name, product_price, qty, total, name, phone, delivery, city, branch, index_post, payment)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [num, String(userId), o.product.name, o.product.price, o.qty, total, o.name, o.phone, o.delivery, o.city || null, o.branch || null, o.index || null, o.payment],
+    (err) => {
+      if (err) console.error('❌ Помилка збереження замовлення:', err.message);
+      else console.log(`✅ Замовлення #${num} збережено в БД`);
+    }
+  );
   
   if (o.payment === 'card') {
     // Оплата картой - новый формат

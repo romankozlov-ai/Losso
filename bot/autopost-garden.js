@@ -125,7 +125,7 @@ function generatePostText(product) {
   return text;
 }
 
-// Публикация товара в канал
+// Публикация товара в канал (с фото и улучшенными кнопками)
 async function postToChannel(product) {
   try {
     const text = generatePostText(product);
@@ -135,18 +135,26 @@ async function postToChannel(product) {
       return false;
     }
     
+    // Добавляем кнопки с ценой и эмодзи
+    const emoji = product.name.toLowerCase().includes('сучкоріз') ? '🌳' :
+                  product.name.toLowerCase().includes('секатор') ? '✂️' :
+                  product.name.toLowerCase().includes('степлер') ? '📎' :
+                  product.name.toLowerCase().includes('ножиці') ? '✂️' :
+                  product.name.toLowerCase().includes('годинник') ? '🕐' : '🌿';
+    
     await bot.telegram.sendPhoto(config.CHANNEL_ID, product.image, {
       caption: text,
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
-          [Markup.button.url('🛒 Купити', `https://t.me/losso_shop_bot?start=buy_${product.id}`)],
-          [Markup.button.url('💬 Написати боту', 'https://t.me/losso_shop_bot')]
+          [Markup.button.url(`${emoji} Купити за ${product.price} грн`, `https://t.me/losso_shop_bot?start=buy_${product.id}`)],
+          [Markup.button.url('🤖 AI помічник', 'https://t.me/losso_shop_bot')],
+          [Markup.button.url('📦 Дивитись всі товари', 'https://t.me/losso_shop_bot')]
         ]
       }
     });
     
-    console.log(`✅ Опубліковано: ${product.name}`);
+    console.log(`✅ Опубліковано з фото: ${product.name}`);
     return true;
   } catch (error) {
     console.error('❌ Помилка публікації:', error.message);
