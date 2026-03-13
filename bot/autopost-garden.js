@@ -6,6 +6,7 @@ const config = require('./config/config');
 const fs = require('fs');
 const path = require('path');
 const xml2js = require('xml2js');
+const { generatePostText } = require('./post-format');
 
 const bot = new Telegraf(config.BOT_TOKEN);
 
@@ -92,53 +93,7 @@ async function getGardenProducts() {
   return gardenProducts;
 }
 
-// Генерация текста поста
-function generatePostText(product) {
-  // Краткое описание из полного
-  let shortDesc = '';
-  if (product.description) {
-    // Берём первые 2-3 предложения
-    const sentences = product.description.split(/[.!?]+/).filter(s => s.trim().length > 20);
-    shortDesc = sentences.slice(0, 2).join('. ') + '.';
-    // Экранируем Markdown-спецсимволы
-    shortDesc = shortDesc
-      .replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1')
-      .replace(/\n/g, ' ');
-  }
-  
-  // Экранируем название товара
-  const escapedName = product.name.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1');
-  
-  // Эмодзи по категориям
-  const categoryEmoji = {
-    'сучкоріз': '🌳',
-    'секатор': '✂️',
-    'степлер': '📎',
-    'ножиці': '✂️',
-    'підв\'яз': '📎',
-    'щеплен': '🔪',
-    'ножівка': '🪚',
-    'пила': '🪚',
-    'лопат': '🥄',
-    'грабел': '🍂'
-  };
-  
-  let emoji = '🌿';
-  for (const [key, em] of Object.entries(categoryEmoji)) {
-    if (product.name.toLowerCase().includes(key)) {
-      emoji = em;
-      break;
-    }
-  }
-  
-  const text = 
-    `${emoji} *${escapedName}*\n\n` +
-    `${shortDesc ? shortDesc + '\n\n' : ''}` +
-    `💰 *Ціна: ${product.price} грн*\n\n` +
-    `👇 Натисніть "🛒 Купити" та одразу перевірте *особисті повідомлення* з ботом!`;
-  
-  return text;
-}
+// Генерация текста поста — импортирована из post-format.js
 
 // Публикация товара в канал (с фото и улучшенными кнопками)
 async function postToChannel(product) {
