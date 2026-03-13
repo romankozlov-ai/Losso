@@ -79,7 +79,11 @@ async function getGardenProducts() {
         nameLower.includes(kw.toLowerCase())
       );
       
-      return available && hasGardenKeyword && !isExcluded;
+      // Проверяем цену - минимум 300 грн для отдельного поста
+      const price = parseInt(offer.price?.[0] || '0');
+      const hasMinPrice = price >= 300;
+      
+      return available && hasGardenKeyword && !isExcluded && hasMinPrice;
     })
     .map(offer => ({
       id: offer.$.id,
