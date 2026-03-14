@@ -4,8 +4,16 @@
 function escapeTgMarkdown(text) {
   if (!text) return '';
   return text
+    // Удаляем HTML-теги
+    .replace(/<[^>]+>/g, ' ')
+    // Экранируем спецсимволы Markdown
     .replace(/[_*\[\]()~`>#+=|{}!\-]/g, '\\$&')
+    // Экранируем апострофы и кавычки которые могут ломать парсинг
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    // Нормализуем пробелы
     .replace(/\n+/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 

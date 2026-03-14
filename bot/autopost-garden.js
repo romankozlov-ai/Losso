@@ -89,7 +89,7 @@ async function getGardenProducts() {
       id: offer.$.id,
       name: offer.name[0],
       price: parseInt(offer.price[0]),
-      description: offer.description?.[0]?.substring(0, 300) + '...' || '',
+      description: offer.description?.[0]?.replace(/\u003c[^\u003e]+\u003e/g, ' ').substring(0, 300) + '...' || '',
       image: offer.picture?.[0] || null,
       category: offer.categoryId?.[0] || null
     }));
