@@ -6,11 +6,10 @@ function escapeTgMarkdown(text) {
   return text
     // Удаляем HTML-теги
     .replace(/<[^>]+>/g, ' ')
+    // Заменяем длинное тире на обычное дефис (чтобы не ломало Markdown)
+    .replace(/—/g, '-')
     // Экранируем спецсимволы Markdown
     .replace(/[_*\[\]()~`>#+=|{}!\-]/g, '\\$&')
-    // Экранируем апострофы и кавычки которые могут ломать парсинг
-    .replace(/'/g, "\\'")
-    .replace(/"/g, '\\"')
     // Нормализуем пробелы
     .replace(/\n+/g, ' ')
     .replace(/\s+/g, ' ')
@@ -165,8 +164,11 @@ function generatePostText(product) {
   const category = detectCategory(product.name);
   const benefits = category ? BENEFITS_DB[category] : null;
   
-  // Экранируем название
+  // Экранируем название и все поля пользы
   const name = escapeTgMarkdown(product.name);
+  const problemText = benefits ? escapeTgMarkdown(benefits.problem) : null;
+  const benefitText = benefits ? escapeTgMarkdown(benefits.benefit) : null;
+  const useCaseText = benefits ? escapeTgMarkdown(benefits.useCase) : null;
   
   // Эмодзи
   const categoryEmoji = {
@@ -193,9 +195,9 @@ function generatePostText(product) {
   
   // Добавляем пользу если нашли категорию
   if (benefits) {
-    parts.push(`❓ *Проблема:* ${benefits.problem}`);
-    parts.push(`✅ *Рішення:* ${benefits.benefit}`);
-    parts.push(`🎯 *Де знадобиться:* ${benefits.useCase}`);
+    parts.push(`❓ *Проблема:* ${problemText}`);
+    parts.push(`✅ *Рішення:* ${benefitText}`);
+    parts.push(`🎯 *Де знадобиться:* ${useCaseText}`);
     parts.push('');
   }
   
