@@ -118,7 +118,7 @@ async function postToChannel(product) {
     
     await bot.telegram.sendPhoto(config.CHANNEL_ID, product.image, {
       caption: text,
-      parse_mode: 'Markdown',
+      parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: [
           [Markup.button.url(`${emoji} Купити за ${product.price} грн`, `https://t.me/losso_shop_bot?start=buy_${product.id}`)],

@@ -6,10 +6,8 @@ function escapeTgMarkdown(text) {
   return text
     // Удаляем HTML-теги
     .replace(/<[^>]+>/g, ' ')
-    // Заменяем длинное тире на обычное дефис (чтобы не ломало Markdown)
+    // Заменяем длинное тире на обычное дефис
     .replace(/—/g, '-')
-    // Экранируем спецсимволы Markdown
-    .replace(/[_*\[\]()~`>#+=|{}!\-]/g, '\\$&')
     // Нормализуем пробелы
     .replace(/\n+/g, ' ')
     .replace(/\s+/g, ' ')
@@ -191,19 +189,19 @@ function generatePostText(product) {
     }
   }
   
-  const parts = [`${emoji} *${name}*`, ''];
+  const parts = [`${emoji} <b>${name}</b>`, ''];
   
   // Добавляем пользу если нашли категорию
   if (benefits) {
-    parts.push(`❓ *Проблема:* ${problemText}`);
-    parts.push(`✅ *Рішення:* ${benefitText}`);
-    parts.push(`🎯 *Де знадобиться:* ${useCaseText}`);
+    parts.push(`❓ <b>Проблема:</b> ${problemText}`);
+    parts.push(`✅ <b>Рішення:</b> ${benefitText}`);
+    parts.push(`🎯 <b>Де знадобиться:</b> ${useCaseText}`);
     parts.push('');
   }
   
-  parts.push(`💰 *Ціна: ${product.price} грн*`);
+  parts.push(`💰 <b>Ціна: ${product.price} грн</b>`);
   parts.push('');
-  parts.push('👇 *Замовити:* тисни кнопку → бот напише в особисті');
+  parts.push('👇 <b>Замовити:</b> тисни кнопку → бот напише в особисті');
   
   return parts.join('\n');
 }
